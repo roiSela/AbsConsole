@@ -1,11 +1,11 @@
 
-import java.util.List;
+import java.util.*;
 
 public class Client {
-    double amountOfMoney;
-    List<Loan> loans;
-    List<Loan> investments;
-
+    private String clientName;
+    private double currentBalance;
+    private List<Transaction> clientTransactions;
+    private List<String> clientLoanIds;
 
 }
 
