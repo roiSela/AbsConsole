@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Bank implements BankActions {
     private static int currentTime;
-    private List<Client> clients;
+    private List<Customer> clients;
     List<Loan> allTheLoans;
 
     @Override

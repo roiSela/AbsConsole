@@ -1,10 +1,11 @@
 import java.util.*;
 
-enum LoanStatus {NEW, PENDING, INRISK, ACTIVE, FINISHED}
+
 
 
 public class Loan {
 
+    enum LoanStatus {NEW, PENDING, INRISK, ACTIVE, FINISHED}
 
     //Fields that will not change
     private String loanName; //every loan has a unique name
@@ -17,6 +18,8 @@ public class Loan {
 
     //dynamic fields
     private List<Transaction> investments;
+    //list of investment- contains customer name, int sizeOfInvestments.
+
     private LoanStatus status;
     private double currentLoanAmount; //money raised so far. when currentLoadAmount=originalLoanAmount the loan turns from pending to active
 
