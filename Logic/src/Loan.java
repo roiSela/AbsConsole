@@ -16,7 +16,7 @@ public class Loan {
     private String LoanCategory; //info about the loan type
 
     //dynamic fields
-    private List<Transaction> transactions;
+    private List<Transaction> investments;
     private LoanStatus status;
     private double currentLoanAmount; //money raised so far. when currentLoadAmount=originalLoanAmount the loan turns from pending to active
 
