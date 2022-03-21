@@ -3,16 +3,8 @@ import java.util.*;
 
 public class Customer {
     private String clientName;
-
-
-    private List<String> clientLoanIds; //all the loads that we invested in
-    //add list
-    //add list of loans.
-    //class acount that will acount  private List<Transaction> clientTransactions,  private double currentBalance;
+    private Account customerAccount;
+    private List<String> IdListOfLoansThatCustomerInvestedIn; //all the loads that we invested in
+    private List<Loan> CustomerLoans;
 
 }
-
-//add investment class
-//add two lists to customer
-//change its name to customer
-//add class acount that manages the account actions
