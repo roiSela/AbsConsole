@@ -14,7 +14,7 @@ public class Transaction {
     public double getFundComponent() {
         return fundComponent;
     }
-    ///edededededede
+
     public double getInterestComponent() {
         return interestComponent;
     }
