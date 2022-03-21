@@ -11,7 +11,7 @@ public class Bank implements BankActions {
         return false;
     }
 
-    @Override //section 2, we will return a list, each string will represent a different loan
+    @Override //section 2, we will return a list, each string will represent a different loan.
     public List<String> getDataAboutLoansAndTheirStatus() {
         List<String> dataAboutLoans = new ArrayList<String>();
 
