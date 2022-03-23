@@ -7,9 +7,6 @@ public class Transaction {
     private String transactionType;
     private double balanceBeforeTransaction;
     private double balanceAfterTransaction;
-    String loaner; //gives the money
-    String borrower; //takes the money
-
 
     public double getFundComponent() {
         return fundComponent;
@@ -19,24 +16,22 @@ public class Transaction {
         return interestComponent;
     }
 
-    public String getLoaner() {
-        return loaner;
-    }
-    public String getBorrower() {
-        return borrower;
-    }
     public int getTransactionTime() {
         return transactionTime;
     }
+
     public double getTransactionAmount() {
         return transactionAmount;
     }
+
     public String getTransactionType() {
         return transactionType;
     }
+
     public double getBalanceBeforeTransaction() {
         return balanceBeforeTransaction;
     }
+
     public double getBalanceAfterTransaction() {
         return balanceAfterTransaction;
     }
