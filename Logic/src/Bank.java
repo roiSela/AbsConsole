@@ -24,6 +24,19 @@ public class Bank implements BankActions {
         loanCategories = new ArrayList<>();
     }
 
+    public Loan getLoanByName(String loanName){
+
+        for(Loan loan : allTheLoans)
+        {
+            if(loan.getLoanName().equals(loanName))
+            {
+                return loan;
+            }
+        }
+        return null;
+    }
+
+
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";
 
     @Override
@@ -138,8 +151,24 @@ public class Bank implements BankActions {
     }
 
     @Override
-    public String getClientsData() {
-        return null;
+    public String getCustomersData() {
+
+        String temp = "";
+        for (Customer customer : customers){
+            temp += "The customer name is : " + customer.getCustomerName() + '\n';
+            temp += "The customer transactions are :" + '\n';
+            temp += customer.getCustomerTransactionsString() + '\n';
+            temp += "The Loans that customer invested in are :" + '\n';
+            for (String loanId : customer.getIdListOfLoansThatCustomerInvestedIn()){
+                temp += getLoanByName(loanId).toString() + '\n';
+            }
+            temp += "The Loans that customer borrowed are : " + '\n';
+            for (Loan loan : customer.getLoansCustomerCreated()){
+                temp += loan.toString() + '\n';
+            }
+
+        }
+        return temp;
     }
 
     @Override

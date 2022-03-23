@@ -19,7 +19,7 @@ public interface BankActions {
     /**
      Get clients data
      */
-    String getClientsData();
+    String getCustomersData();
 
     /**
      put the money in the client's account

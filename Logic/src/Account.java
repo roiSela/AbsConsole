@@ -14,4 +14,13 @@ public class Account {
     public double getCurrentBalance() {
         return currentBalance;
     }
+    public String accountTransactionsToString(){
+        String temp = "";
+
+        for(Transaction transaction : customerTransactions)
+        {
+            temp += transaction.toString();
+        }
+        return temp;
+    }
 }

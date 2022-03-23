@@ -15,5 +15,10 @@ public class Customer {
         idListOfLoansThatCustomerInvestedIn = new ArrayList<>();
         loansCustomerCreated = new ArrayList<>();
     }
+    public String getCustomerTransactionsString(){return account.accountTransactionsToString();}
+    public String getCustomerName() {return name;}
+    public Account getCustomerAccount() {return account;}
+    public List<String> getIdListOfLoansThatCustomerInvestedIn() {return idListOfLoansThatCustomerInvestedIn;}
+    public List<Loan> getLoansCustomerCreated() {return loansCustomerCreated;}
 
 }
