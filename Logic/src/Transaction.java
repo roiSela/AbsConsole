@@ -8,6 +8,9 @@ public class Transaction {
     private double balanceBeforeTransaction;
     private double balanceAfterTransaction;
 
+    private boolean transactionPassedSuccesfully; //sometimes, because of lack of funds from customer, a loan turns to "in-risk" mode, we need to mark this transaction so we can complete it
+    //in the future.
+
     public double getFundComponent() {
         return fundComponent;
     }
@@ -35,4 +38,10 @@ public class Transaction {
     public double getBalanceAfterTransaction() {
         return balanceAfterTransaction;
     }
+
+    public boolean isTransactionPassedSuccesfully() {
+        return transactionPassedSuccesfully;
+    }
+
+
 }
