@@ -8,6 +8,19 @@ public class Account {
         currentBalance = initSum;
         customerTransactions = new ArrayList<>();
     }
+
+    public void  putMoneyInAccount(double moneyToLoad, int currentTime){
+        currentBalance = currentBalance + moneyToLoad;
+        double balanceBeforeTransaction = currentBalance - moneyToLoad;
+        Transaction newTransaction = new Transaction(moneyToLoad, currentTime, "+", balanceBeforeTransaction, currentBalance);
+    }
+
+    public void  takeMoneyFromAccount(double moneyToTake, int currentTime){
+        currentBalance = currentBalance - moneyToTake;
+        double balanceBeforeTransaction = currentBalance + moneyToTake;
+        Transaction newTransaction = new Transaction(moneyToTake, currentTime, "-", balanceBeforeTransaction, currentBalance);
+
+    }
     public List<Transaction> getCustomerTransactions() {
         return customerTransactions;
     }

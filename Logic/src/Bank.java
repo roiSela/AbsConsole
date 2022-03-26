@@ -172,13 +172,19 @@ public class Bank implements BankActions {
     }
 
     @Override
-    public boolean putMoneyInAccount(int moneyToLoad, int client) {
-        return false;
+    public boolean putMoneyInAccount(double moneyToLoad, int customer) {
+        Customer ServicedCustomer = customers.get(customer);
+        Account accountToAdd = ServicedCustomer.getCustomerAccount();
+        accountToAdd.putMoneyInAccount(moneyToLoad, currentTime);
+        return true;
     }
 
     @Override
-    public boolean takeMoneyFromAccount(int moneyToTake, int client) {
-        return false;
+    public boolean takeMoneyFromAccount(double moneyToTake, int customer) {
+        Customer ServicedCustomer = customers.get(customer);
+        Account accountToTake = ServicedCustomer.getCustomerAccount();
+        accountToTake.takeMoneyFromAccount(moneyToTake, currentTime);
+        return true;
     }
 
     @Override

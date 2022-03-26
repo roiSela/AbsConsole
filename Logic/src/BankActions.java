@@ -24,12 +24,12 @@ public interface BankActions {
     /**
      put the money in the client's account
      */
-    boolean putMoneyInAccount(int moneyToLoad,int client);
+    boolean putMoneyInAccount(double moneyToLoad,int customer);
 
     /**
     taking money from client
      */
-    boolean takeMoneyFromAccount(int moneyToTake,int client);
+    boolean takeMoneyFromAccount(double moneyToTake,int customer);
 
     /**
     this function Places loans to one client
