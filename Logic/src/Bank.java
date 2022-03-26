@@ -190,6 +190,12 @@ public class Bank implements BankActions {
     public boolean RaiseTheTimeLine() {
         return false;
     }
+
+
+
+    public static int getCurrentTime() {
+        return currentTime;
+    }
 }
 
 

@@ -1,5 +1,4 @@
 public class Transaction {
-    private String transactionId;
     private int transactionTime;
     private double transactionAmount;
     private double fundComponent;
@@ -9,16 +8,8 @@ public class Transaction {
     private double balanceBeforeTransaction;
     private double balanceAfterTransaction;
 
-    public String toString() {
-        String temp = "";
-        temp += "The transaction time is: " + getTransactionTime() + '\n';
-        temp += "The transaction size is: " + transactionAmount + '\n';
-        temp += "The transaction type is " + getTransactionType() + '\n';
-        temp += "The balance before transaction " + getBalanceBeforeTransaction() + '\n';
-        temp += "The balance before transaction after transaction " + getBalanceAfterTransaction() + '\n';
-
-        return temp;
-    }
+    private boolean transactionPassedSuccesfully; //sometimes, because of lack of funds from customer, a loan turns to "in-risk" mode, we need to mark this transaction so we can complete it
+    //in the future.
 
     public double getFundComponent() {
         return fundComponent;
@@ -47,4 +38,10 @@ public class Transaction {
     public double getBalanceAfterTransaction() {
         return balanceAfterTransaction;
     }
+
+    public boolean isTransactionPassedSuccesfully() {
+        return transactionPassedSuccesfully;
+    }
+
+
 }
