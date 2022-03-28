@@ -37,7 +37,7 @@ public class Bank implements BankActions {
     }
 
 
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";
+    private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";//
 
     @Override
     public String loadSystemDetailsFromFile(String filePath) {
