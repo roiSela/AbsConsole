@@ -3,8 +3,8 @@ public class Transaction {
     private int transactionId;
     private int transactionTime;
     private double transactionAmount;
-    //private double fundComponent; it's not a relevant field for transaction class
-    //private double interestComponent;
+    private double fundComponent; //it's not a relevant field for transaction class
+    private double interestComponent;
     //note: transactionAmount = fundComponent + interestComponent;
     private String transactionType;
     private double balanceBeforeTransaction;
@@ -36,9 +36,9 @@ public class Transaction {
     //in the future.
 
 
-    // public double getFundComponent() {return fundComponent;} //
+    public double getFundComponent() {return fundComponent;} //
 
-    //public double getInterestComponent() {return interestComponent;}
+    public double getInterestComponent() {return interestComponent;}
 
     public int getTransactionTime() {
         return transactionTime;
