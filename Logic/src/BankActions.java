@@ -34,10 +34,9 @@ public interface BankActions {
     /**
     this function Places loans to one client
      it gets client to place loans to, money to invest.
-     and it can also get other conditions for loan.
-
+     (and it can also get other conditions for loan)
      */
-    boolean SchedulingLoansToClient(int client, double moneyToInvest, List<String> categories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment);
+    boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansToScheduling);
 
 
     /**

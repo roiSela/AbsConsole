@@ -19,6 +19,18 @@ public class Transaction {
 
     }
 
+    //transaction constructor for loan payments
+    public Transaction(int transactionId,double transactionAmount,double fundComponent, double interestComponent ,int transactionTime, boolean transactionPassedSuccesfully) {
+        this.transactionId = transactionId;
+        this.transactionTime = transactionTime;
+        this.transactionAmount = transactionAmount;
+        this.fundComponent = fundComponent;
+        this.interestComponent = interestComponent;
+        this.transactionType = "loan payment";
+        this.balanceBeforeTransaction = 0;
+        this.balanceAfterTransaction = 0;
+        this.transactionPassedSuccesfully = transactionPassedSuccesfully;
+    }
 
 
     public String toString() {

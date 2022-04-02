@@ -15,6 +15,16 @@ public class Customer {
         idListOfLoansThatCustomerInvestedIn = new ArrayList<>();
         loansCustomerCreated = new ArrayList<>();
     }
+
+    public void addCreatedLoan(Loan loan) {
+        loansCustomerCreated.add(loan);
+    }
+    public void addInvestedLoan(String id) {
+        if (!idListOfLoansThatCustomerInvestedIn.contains(id)) {
+            idListOfLoansThatCustomerInvestedIn.add(id);
+        }
+    }
+
     public String getCustomerTransactionsString(){return account.accountTransactionsToString();}
     public String getCustomerName() {return name;}
     public Account getCustomerAccount() {return account;}

@@ -9,12 +9,13 @@ public class Loan {
 
     //Fields that will not change
     private String loanName; //every loan has a unique name
-    private String nameOfCreatingClient; //the client that created this loan
+    private String nameOfCreatingCustomer; //the client that created this loan
     private double loanAmount; //sum of loan
     private int totalAmountOfTimeUnits;
-    private int paymentRatePerTimeUnits; // rate of payment
+    private int paymentRatePerTimeUnits; // rate of payment, for example, every 3 time units.
     private double interestRateInEveryPayment;
     private String loanCategory;
+
 
     //dynamic fields
     private List<Investment> investments; //list of investing customers and their size of investments.
@@ -27,7 +28,7 @@ public class Loan {
 
     public Loan(AbsLoan copyFrom) {
         loanName = copyFrom.getId();
-        nameOfCreatingClient = copyFrom.getAbsOwner();
+        nameOfCreatingCustomer = copyFrom.getAbsOwner();
         loanAmount = copyFrom.getAbsCapital();
         totalAmountOfTimeUnits = copyFrom.getAbsTotalYazTime();
         paymentRatePerTimeUnits = copyFrom.getAbsPaysEveryYaz();
@@ -39,11 +40,39 @@ public class Loan {
 
     }
 
+    public Loan(Loan copyFrom) {
+        loanName = copyFrom.getLoanName();
+        nameOfCreatingCustomer = copyFrom.getNameOfCreatingCustomer();
+        loanAmount = copyFrom.getLoanAmount();
+        totalAmountOfTimeUnits = copyFrom.getTotalAmountOfTimeUnits();
+        paymentRatePerTimeUnits = copyFrom.getPaymentRatePerTimeUnits();
+        interestRateInEveryPayment = copyFrom.getInterestRateInEveryPayment();
+        loanCategory = copyFrom.getLoanCategory();
+        status = copyFrom.getStatus();
+
+        investments = new ArrayList<>();
+        List<Investment> copyFromInvestments = copyFrom.getInvestments();
+        for (Investment i : copyFromInvestments) {
+            investments.add(new Investment(i.getNameOfCustomer(), i.getSizeOfInvestment()));
+        }
+        loanPayments = new ArrayList<>();
+        List<Transaction> copyFromLoanPayments = copyFrom.getLoanPayments();
+        int counter = 1;
+        for (Transaction t : copyFromLoanPayments) {
+            loanPayments.add(new Transaction(counter,t.getTransactionAmount(),t.getFundComponent(),t.getInterestComponent(),t.getTransactionTime(), t.isTransactionPassedSuccesfully()));
+            counter++;
+        }
+
+        startingTime = copyFrom.getStartingTime();
+        finishingTime = copyFrom.getFinishingTime();
+    }
+
+
     @Override
     public String toString() {
         String temp = "";
         temp += "The loan name is: " + getLoanName() + '\n'; //the loan identifier
-        temp += "The owner of the loan is: " + getNameOfCreatingClient() + '\n'; //owner of the loan
+        temp += "The owner of the loan is: " + getNameOfCreatingCustomer() + '\n'; //owner of the loan
         temp += "The category of the loan is: " + getLoanCategory() + '\n'; //loan category
         temp += "The loan sum is: " + getLoanAmount() + " ; " + "The original loan time is: " + getTotalAmountOfTimeUnits() + '\n';
         temp += "The interest of the loan: " + getInterestRateInEveryPayment() + " ; " + "The rate of payments: " + getPaymentRatePerTimeUnits() + '\n';
@@ -59,8 +88,8 @@ public class Loan {
                 temp += getDataForActiveLoanStatus();
                 temp += "The unpaid payments (payment number and sum) are as follows:" + '\n';
                 int paymentNumber = 1;
-                for (Transaction t: loanPayments) {
-                    if (!t.isTransactionPassedSuccesfully()){
+                for (Transaction t : loanPayments) {
+                    if (!t.isTransactionPassedSuccesfully()) {
                         temp += "Payment number " + paymentNumber + "with sum of " + t.getTransactionAmount() + '\n';
                     }
                     paymentNumber++;
@@ -99,7 +128,7 @@ public class Loan {
         String temp = "";
         temp += "The loaners for this loan are:\n";
         for (Investment investment : investments) {
-            temp += "name: " + investment.getNameOfCustomer() + " and he invested " + investment.getSizeOfInvestment() + '\n';
+            temp += "name: " + investment.getNameOfCustomer() + " invested: " + investment.getSizeOfInvestment() + '\n';
         }
         temp += "The amount of money raised so far is: " + moneyRaisedSoFar() + '\n';
         double moneyLeftForActiveLoan = loanAmount - moneyRaisedSoFar();
@@ -109,22 +138,69 @@ public class Loan {
 
     //utility function for toString.
     private String getLoanPaymentsSoFar() {
-        String temp = "";
-        temp += "The loan payments so far are as follows: " + '\n';
-        int transactionCounter = 1;
-        for (Transaction t : loanPayments) {
-            temp += "The transection number is: " + transactionCounter + '\n';
-            temp += "It happend in time unit: " + t.getTransactionTime() + '\n';
-            temp += "Its fund component amount is: " + t.getFundComponent() + '\n';
-            temp += "Its interest component amount is: " + t.getInterestComponent() + '\n';
-            temp += "Which sums up to a total of: " + t.getTransactionAmount() + '\n';
-            transactionCounter++;
+        if (loanPayments.size() == 0) {
+            return "There are no payments for this loan yet.";
+        }else{
+            String temp = "";
+            temp += "The loan payments so far are as follows: " + '\n';
+            int transactionCounter = 1;
+            for (Transaction t : loanPayments) {
+                temp += "The transection number is: " + transactionCounter + '\n';
+                temp += "It happend in time unit: " + t.getTransactionTime() + '\n';
+                temp += "Its fund component amount is: " + t.getFundComponent() + '\n';
+                temp += "Its interest component amount is: " + t.getInterestComponent() + '\n';
+                temp += "Which sums up to a total of: " + t.getTransactionAmount() + '\n';
+                transactionCounter++;
+            }
+            return temp;
         }
-        return temp;
+    }
+
+    public void invest(String nameOfInvestor, double amountOfInvestment) {
+        Boolean isCustomerAlreadyInvested = false;
+        for (Investment i : investments) {
+            if (i.getNameOfCustomer().equals(nameOfInvestor)) {
+                isCustomerAlreadyInvested = true;
+                i.addInvestment(amountOfInvestment);
+                break;
+            }
+        }
+        if (!isCustomerAlreadyInvested) {
+            investments.add(new Investment(nameOfInvestor, amountOfInvestment));
+        }
+        updateLoanStatus();
+    }
+
+    //update loan status
+    public void updateLoanStatus() {
+      if (moneyRaisedSoFar() >= 0){
+          status = LoanStatus.PENDING;
+      }
+      if (moneyRaisedSoFar() >= loanAmount) {
+          status = LoanStatus.ACTIVE;
+          startingTime = getCurrentTime();
+      }
+      if (thereIsAnUnpaidLoanPayment()){
+          status = LoanStatus.RISK;
+      }
+      if(getFundLeftForFinishingLoan() <= 0 && getInterestLeftForFinishingLoan() <= 0){
+          status = LoanStatus.FINISHED;
+          finishingTime = getCurrentTime();
+      }
+
+    }
+
+    boolean thereIsAnUnpaidLoanPayment() {
+      for (Transaction t : loanPayments) {
+          if (t.isTransactionPassedSuccesfully() == false) {
+              return true;
+          }
+      }
+      return false;
     }
 
     private double getTotalInterestLoanNeedsToPay() {
-        return (getLoanAmount() * getInterestRateInEveryPayment());
+        return (getLoanAmount() * (getInterestRateInEveryPayment()/100) );
     }
 
     private double getFundPaidSoFar() {
@@ -147,16 +223,19 @@ public class Loan {
         return (getTotalInterestLoanNeedsToPay() - getInterestPaidSoFar());
     }
 
-    private double getFundLeftForFinishingLoan() {
+    public double getFundLeftForFinishingLoan() {
         return (loanAmount - getFundPaidSoFar());
     }
 
     private int getTimeUnitsLeftForNextPayment() {
         int timeLeft = 0;
+        if (loanPayments.size() > 0) {
         int timeOfLastPayment = loanPayments.get(loanPayments.size() - 1).getTransactionTime();
         timeOfLastPayment = timeOfLastPayment % getPaymentRatePerTimeUnits();
         timeLeft = getPaymentRatePerTimeUnits() - timeOfLastPayment;
         return timeLeft;
+        }else //the loan just became active
+            return getPaymentRatePerTimeUnits();
     }
 
     public double moneyRaisedSoFar() {
@@ -175,8 +254,8 @@ public class Loan {
         return loanName;
     }
 
-    public String getNameOfCreatingClient() {
-        return nameOfCreatingClient;
+    public String getNameOfCreatingCustomer() {
+        return nameOfCreatingCustomer;
     }
 
     public double getLoanAmount() {
@@ -213,6 +292,25 @@ public class Loan {
 
     public int getFinishingTime() {
         return finishingTime;
+    }
+
+    public double getInterestPerOneTimeUnit() { //for filtering loans by interest per one time unit in section 6
+        double interestPerOneTimeUnit = getInterestRateInEveryPayment() / getPaymentRatePerTimeUnits();
+        return interestPerOneTimeUnit;
+    }
+
+    public boolean isLoanNewOrPending() {
+        return status == LoanStatus.NEW || status == LoanStatus.PENDING;
+    }
+    public boolean isLoanActive() {
+        if (status == LoanStatus.ACTIVE) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<Investment> getInvestments() {
+        return investments;
     }
 
     public Loan() //empty ctor

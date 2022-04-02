@@ -24,12 +24,10 @@ public class Bank implements BankActions {
         loanCategories = new ArrayList<>();
     }
 
-    public Loan getLoanByName(String loanName){
+    public Loan getLoanByName(String loanName) {
 
-        for(Loan loan : allTheLoans)
-        {
-            if(loan.getLoanName().equals(loanName))
-            {
+        for (Loan loan : allTheLoans) {
+            if (loan.getLoanName().equals(loanName)) {
                 return loan;
             }
         }
@@ -132,6 +130,14 @@ public class Bank implements BankActions {
         for (AbsLoan absLoan : absLoans) {
             allTheLoans.add(new Loan(absLoan));
         }
+
+        for (Customer customer : customers) {//add the loans to the creating customers
+            for (Loan loan : allTheLoans) {
+                if (customer.getCustomerName().equals(loan.getNameOfCreatingCustomer())) {
+                    customer.addCreatedLoan(loan);
+                }
+            }
+        }
     }
 
     private static AbsDescriptor deserializeFrom(InputStream in) throws JAXBException {
@@ -150,20 +156,20 @@ public class Bank implements BankActions {
         return dataAboutLoans;
     }
 
-    @Override
+    @Override //section 3.
     public String getCustomersData() {
 
         String temp = "";
-        for (Customer customer : customers){
+        for (Customer customer : customers) {
             temp += "The customer name is : " + customer.getCustomerName() + '\n';
             temp += "The customer transactions are :" + '\n';
             temp += customer.getCustomerTransactionsString() + '\n';
             temp += "The Loans that customer invested in are :" + '\n';
-            for (String loanId : customer.getIdListOfLoansThatCustomerInvestedIn()){
+            for (String loanId : customer.getIdListOfLoansThatCustomerInvestedIn()) {
                 temp += getLoanByName(loanId).toString() + '\n';
             }
             temp += "The Loans that customer borrowed are : " + '\n';
-            for (Loan loan : customer.getLoansCustomerCreated()){
+            for (Loan loan : customer.getLoansCustomerCreated()) {
                 temp += loan.toString() + '\n';
             }
 
@@ -171,7 +177,7 @@ public class Bank implements BankActions {
         return temp;
     }
 
-    @Override
+    @Override //section 4
     public boolean putMoneyInAccount(double moneyToLoad, int customer) {
         Customer ServicedCustomer = customers.get(customer);
         Account accountToAdd = ServicedCustomer.getCustomerAccount();
@@ -179,7 +185,7 @@ public class Bank implements BankActions {
         return true;
     }
 
-    @Override
+    @Override //section 5
     public boolean takeMoneyFromAccount(double moneyToTake, int customer) {
         Customer ServicedCustomer = customers.get(customer);
         Account accountToTake = ServicedCustomer.getCustomerAccount();
@@ -187,17 +193,157 @@ public class Bank implements BankActions {
         return true;
     }
 
-    @Override
-    public boolean SchedulingLoansToClient(int client, double moneyToInvest, List<String> categories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment) {
-        return false;
+    @Override//section 6
+    public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling) {
+        loansForScheduling = createDeepCopyLoansList(loansForScheduling); //if we don't create a deep copy, the payments will be preformed twice.
+        double moneyToInvestCopy = moneyToInvest;
+        List<Double> howMuchToInvestInEachLoan = new ArrayList<>();
+        List<String> loansForSchedulingNames = new ArrayList<>(); //when we will iterate over the original loans list we will need this
+        for (Loan loan : loansForScheduling) {
+            loansForSchedulingNames.add(loan.getLoanName());
+        }
+
+        //init how much to invest in each loan
+        for (int i = 0; i < loansForScheduling.size(); i++) {
+            howMuchToInvestInEachLoan.add((double) 0);
+        }
+
+        //calculate how much to invest in each loan
+        boolean doneDividingMoneyToInvest = false;
+        while (!doneDividingMoneyToInvest) {
+            double minInvest = findMinMoneyLeftToInvest(loansForScheduling); //find minimum money left to invest in all loans
+            if (getNumberOfnewOrPendingLoans(loansForScheduling) == 0) { //no more loans left to invest in. (all are ACTIVE now.)
+                doneDividingMoneyToInvest = true;
+                break;
+            }
+            if (moneyToInvest == 0) { //if the investment money ran out
+                doneDividingMoneyToInvest = true;
+                break;
+            }
+            if (moneyToInvest >= minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)) { //we will add min invest to all the pending or new loans
+                for (int i = 0; i < loansForScheduling.size(); i++) {
+                    if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                        howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + minInvest);
+                        loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), minInvest);
+                        moneyToInvest -= minInvest;
+                    }
+                }
+            } else {// moneyToInvest < minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)
+                double moneyToInvestInEachNewOrPendingLoan = moneyToInvest / getNumberOfnewOrPendingLoans(loansForScheduling);
+                for (int i = 0; i < loansForScheduling.size(); i++) {
+                    if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                        howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + moneyToInvestInEachNewOrPendingLoan);
+                        loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), moneyToInvestInEachNewOrPendingLoan);
+                        moneyToInvest -= moneyToInvestInEachNewOrPendingLoan;
+                    }
+                }
+                doneDividingMoneyToInvest = true;
+                break;
+            }
+
+        }
+
+//now we need to implement the changes to the actual loan list, and to update the customer's account:
+        int counter = 0;
+        for (Loan loan : allTheLoans) {
+            if (loansForSchedulingNames.contains(loan.getLoanName())) {
+                loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
+                //customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter),getCurrentTime());
+                customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
+                counter++;
+            }
+        }
+        customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(moneyToInvestCopy, getCurrentTime());
+        return true;
     }
 
-    @Override
+    //creat deep copy of loan list
+    private List<Loan> createDeepCopyLoansList(List<Loan> loans) {
+        List<Loan> deepCopy = new ArrayList<>();
+        for (Loan loan : loans) {
+            Loan temp = new Loan(loan);
+            deepCopy.add(temp);
+        }
+        return deepCopy;
+    }
+
+    //find minimum money left to invest in each loan
+    private double findMinMoneyLeftToInvest(List<Loan> loansForScheduling) {
+        double minMoneyLeftToInvestInAllTheSchedulingLoans = Double.MAX_VALUE;
+        for (Loan loan : loansForScheduling) {
+            if (loan.isLoanNewOrPending()) { //if the loan is pending or new
+                if (loan.getFundLeftForFinishingLoan() < minMoneyLeftToInvestInAllTheSchedulingLoans) {
+                    minMoneyLeftToInvestInAllTheSchedulingLoans = loan.getFundLeftForFinishingLoan();
+                }
+            }
+        }
+        return minMoneyLeftToInvestInAllTheSchedulingLoans;
+    }
+
+    //get number of active loans
+    private int getNumberOfnewOrPendingLoans(List<Loan> loansForScheduling) {
+        int numberOfnewOrPendingLoans = 0;
+        for (Loan loan : loansForScheduling) {
+            if (loan.isLoanNewOrPending()) {
+                numberOfnewOrPendingLoans++;
+            }
+        }
+        return numberOfnewOrPendingLoans;
+    }
+
+    //utility function for section 6
+    public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment) {
+
+        List<Loan> filteredLoans = new ArrayList<>();
+        for (Loan loan : allTheLoans) {
+            boolean isLoanNewOrPending = loan.isLoanNewOrPending();
+            boolean theLoanIsInFilteredCategories = filteredCategories.contains(loan.getLoanCategory());
+            boolean customerIsNotTheLoanOwner = !(loan.getNameOfCreatingCustomer().equals(customers.get(investingCustomerIndex).getCustomerName())); //need to make sure he cannot invest in himself
+            boolean theLoanHasEnoughInterest = loan.getInterestPerOneTimeUnit() >= minimumInterestForTimeUnit;
+            boolean loanHasEnoughTimeUnits = loan.getTotalAmountOfTimeUnits() >= minimumTotalTimeUnitsForInvestment;
+
+            if (minimumInterestForTimeUnit == -1) {
+                theLoanHasEnoughInterest = true;
+            }
+            if (minimumTotalTimeUnitsForInvestment == -1) {
+                loanHasEnoughTimeUnits = true;
+            }
+            if (filteredCategories.size() == 0) {
+                theLoanIsInFilteredCategories = true;
+            }
+            if (isLoanNewOrPending && theLoanIsInFilteredCategories && customerIsNotTheLoanOwner && theLoanHasEnoughInterest && loanHasEnoughTimeUnits) {
+                filteredLoans.add(loan);
+            }
+        }
+
+        return filteredLoans;
+    }
+
+    public List<String> getListOfCustomerNamesAndTheirCurrentBalance() {
+        List<String> customerData = new ArrayList<>();
+        int customerIndexCounter = 1;
+        for (Customer customer : customers) {
+            String temp;
+            temp = customerIndexCounter + " - " + customer.getCustomerName() + ", balance: " + customer.getCustomerAccount().getCurrentBalance() + '\n';
+            customerData.add(temp);
+            customerIndexCounter++;
+        }
+        return customerData;
+    }
+
+    double getCustomerBalance(int customerIndex) {
+        return customers.get(customerIndex).getCustomerAccount().getCurrentBalance();
+    }
+
+    @Override //section 7
     public boolean RaiseTheTimeLine() {
         return false;
     }
 
 
+    public List<String> getLoanCategories() {
+        return loanCategories;
+    }
 
     public static int getCurrentTime() {
         return currentTime;
