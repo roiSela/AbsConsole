@@ -248,12 +248,12 @@ public class Bank implements BankActions {
         for (Loan loan : allTheLoans) {
             if (loansForSchedulingNames.contains(loan.getLoanName())) {
                 loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
-                //customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter),getCurrentTime());
+                customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter),getCurrentTime());
                 customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
                 counter++;
             }
         }
-        customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(moneyToInvestCopy, getCurrentTime());
+        //customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(moneyToInvestCopy, getCurrentTime());
         return true;
     }
 
