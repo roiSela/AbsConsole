@@ -13,12 +13,14 @@ public class Account {
         currentBalance = currentBalance + moneyToLoad;
         double balanceBeforeTransaction = currentBalance - moneyToLoad;
         Transaction newTransaction = new Transaction(moneyToLoad, currentTime, "+", balanceBeforeTransaction, currentBalance);
+        customerTransactions.add(newTransaction);
     }
 
     public void  takeMoneyFromAccount(double moneyToTake, int currentTime){
         currentBalance = currentBalance - moneyToTake;
         double balanceBeforeTransaction = currentBalance + moneyToTake;
         Transaction newTransaction = new Transaction(moneyToTake, currentTime, "-", balanceBeforeTransaction, currentBalance);
+        customerTransactions.add(newTransaction);
 
     }
     public List<Transaction> getCustomerTransactions() {
@@ -36,4 +38,5 @@ public class Account {
         }
         return temp;
     }
+    public void setAccountBalance(double accountBalance){this.currentBalance = accountBalance;}
 }

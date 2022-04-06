@@ -179,6 +179,7 @@ public class Bank implements BankActions {
 
     @Override //section 4
     public boolean putMoneyInAccount(double moneyToLoad, int customer) {
+
         Customer ServicedCustomer = customers.get(customer);
         Account accountToAdd = ServicedCustomer.getCustomerAccount();
         accountToAdd.putMoneyInAccount(moneyToLoad, currentTime);
@@ -187,11 +188,27 @@ public class Bank implements BankActions {
 
     @Override //section 5
     public boolean takeMoneyFromAccount(double moneyToTake, int customer) {
+
         Customer ServicedCustomer = customers.get(customer);
         Account accountToTake = ServicedCustomer.getCustomerAccount();
         accountToTake.takeMoneyFromAccount(moneyToTake, currentTime);
         return true;
     }
+
+    public String printAllCustomerNames(){
+
+        String allCustomerNames = "";
+        int currentCustomer = 1;
+        for(Customer customer : customers){
+            allCustomerNames += currentCustomer + ". " + customer.getCustomerName() + '\n';
+            currentCustomer ++;
+        }
+
+        return allCustomerNames;
+    }
+
+
+
 
     @Override//section 6
     public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling) {
@@ -337,8 +354,68 @@ public class Bank implements BankActions {
 
     @Override //section 7
     public boolean RaiseTheTimeLine() {
+        currentTime++;
         return false;
     }
+
+    public void payForLoans(Customer customer){
+
+        Account customerAccount = customer.getCustomerAccount();
+        List<Loan> customerLoans = customer.getLoansCustomerCreated();
+        List<Loan> loansToPayToday = new ArrayList<>(); // list of loans for payment during this timeframe
+        for (Loan loan : customerLoans){
+            if(loan.getStatus() == Loan.LoanStatus.RISK){
+                loansToPayToday.add(loan);
+            }
+            else if(loan.getStatus() == Loan.LoanStatus.ACTIVE){
+                if(loan.isPaymentDay(currentTime))
+                    loansToPayToday.add(loan);
+            }
+        }
+
+        sortLoans(loansToPayToday);
+        for(Loan loan : loansToPayToday){
+            if(loan.calculateMoneyToPay(currentTime) > customerAccount.getCurrentBalance()){
+                loan.updateDebt(loan.calculateMoneyToPay(currentTime));
+            }
+            else{
+
+               Transaction loanPayment = new Transaction(1, loan.calculateMoneyToPay(currentTime), loan.getInterestPerOneTimeUnit(),loan.getInterestRateInEveryPayment(),currentTime,true);
+               customerAccount.getCustomerTransactions().add(loanPayment);
+               customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.calculateMoneyToPay(currentTime));
+               loan.getLoanPayments().add(loanPayment);
+               loan.setAccumalatedDebt(0);
+               if(currentTime >= loan.getStartingTime() + loan.getTotalAmountOfTimeUnits()){
+                   loan.setLoanStatus(Loan.LoanStatus.FINISHED);
+               }
+               else{
+                   loan.setLoanStatus(Loan.LoanStatus.ACTIVE);
+               }
+
+               for(Investment investment : loan.getInvestments()){
+                   double investmentPart = loan.getLoanAmount() / investment.getSizeOfInvestment();
+                   double paymentAmmount = loan.calculateMoneyToPay(currentTime) / investmentPart;
+                   Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
+                   payInvestment(paymentAmmount, investedCustomer);
+               }
+            }
+
+        }
+        
+    }
+
+    public void payInvestment(double paymentAmmount, Customer customer){
+        Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() + paymentAmmount);
+        Account customerAccount = customer.getCustomerAccount();
+        customerAccount .getCustomerTransactions().add(paymentToinvestor);
+        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
+
+    }
+
+    public void sortLoans( List<Loan> loansToPayToday){
+
+    }
+
 
 
     public List<String> getLoanCategories() {
@@ -347,6 +424,16 @@ public class Bank implements BankActions {
 
     public static int getCurrentTime() {
         return currentTime;
+    }
+
+    public  Customer getCustomerByName(String customerName){
+        for(Customer customer : customers){
+            if(customer.getCustomerName().equals(customerName)) {
+                return customer;
+
+            }
+        }
+        return null;
     }
 }
 

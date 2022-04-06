@@ -1,7 +1,9 @@
+import java.io.*;
 import java.util.*;
 
 
-public class Main {
+public class
+        Main {
     // enum MenuOptions {READ_FILE , LOANS_DATA, CUSTOMERS_DATA, LOAD_MONEY, WITHDRAW_MONEY, SCHEDULING, PROMOTING_TIMELINE, EXIT}
 
     public static void main(String[] args) {
@@ -38,12 +40,34 @@ public class Main {
                         }
                         break;
                     case "3":
+                        System.out.println("The system customers are:");
+                        String customerData = bank.getCustomersData();
+                        System.out.println(customerData);
 
                         break;
                     case "4":
+                        System.out.println("Choose Customer to load money :");
+                        String allCustomerNames = bank.printAllCustomerNames();
+                        System.out.println(allCustomerNames);
+                        Scanner intInput  = new Scanner(System.in);
+                        Integer customerNumber = intInput.nextInt();
+                        System.out.println("How much money do you want to load? : ");
+                        Scanner doubleInput  = new Scanner(System.in);
+                        Double moneyToLoad = doubleInput.nextDouble();
+                        bank.putMoneyInAccount(moneyToLoad, customerNumber - 1 );
+
 
                         break;
                     case "5":
+                        System.out.println("Choose Customer to take money :");
+                        allCustomerNames = bank.printAllCustomerNames();
+                        System.out.println(allCustomerNames);
+                        intInput  = new Scanner(System.in);
+                        customerNumber = intInput.nextInt();
+                        System.out.println("How much money do you want to take? : ");
+                        doubleInput  = new Scanner(System.in);
+                        Double moneyToTake = doubleInput.nextDouble();
+                        bank.takeMoneyFromAccount(moneyToTake, customerNumber - 1 );
 
                         break;
                     case "6":

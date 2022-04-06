@@ -21,9 +21,16 @@ public class Loan {
     private List<Investment> investments; //list of investing customers and their size of investments.
     private List<Transaction> loanPayments; //the payments that the loan did so far
     private LoanStatus status;
+    private double accumalatedDebt; ///the total debt acculumated to this moment
 
     private int startingTime; //time loan became active
     private int finishingTime; // time loan is finished
+
+    public boolean isPaymentDay(int currentTime) {
+        boolean isPaymentTime = (currentTime - startingTime) % paymentRatePerTimeUnits == 0;
+        boolean isLastPayment = currentTime == startingTime + totalAmountOfTimeUnits;
+        return isPaymentTime || isLastPayment;
+    }
 
 
     public Loan(AbsLoan copyFrom) {
@@ -59,7 +66,7 @@ public class Loan {
         List<Transaction> copyFromLoanPayments = copyFrom.getLoanPayments();
         int counter = 1;
         for (Transaction t : copyFromLoanPayments) {
-            loanPayments.add(new Transaction(counter,t.getTransactionAmount(),t.getFundComponent(),t.getInterestComponent(),t.getTransactionTime(), t.isTransactionPassedSuccesfully()));
+            loanPayments.add(new Transaction(counter, t.getTransactionAmount(), t.getFundComponent(), t.getInterestComponent(), t.getTransactionTime(), t.isTransactionPassedSuccesfully()));
             counter++;
         }
 
@@ -140,7 +147,7 @@ public class Loan {
     private String getLoanPaymentsSoFar() {
         if (loanPayments.size() == 0) {
             return "There are no payments for this loan yet.";
-        }else{
+        } else {
             String temp = "";
             temp += "The loan payments so far are as follows: " + '\n';
             int transactionCounter = 1;
@@ -173,34 +180,34 @@ public class Loan {
 
     //update loan status
     public void updateLoanStatus() {
-      if (moneyRaisedSoFar() >= 0){
-          status = LoanStatus.PENDING;
-      }
-      if (moneyRaisedSoFar() >= loanAmount) {
-          status = LoanStatus.ACTIVE;
-          startingTime = getCurrentTime();
-      }
-      if (thereIsAnUnpaidLoanPayment()){
-          status = LoanStatus.RISK;
-      }
-      if(getFundLeftForFinishingLoan() <= 0 && getInterestLeftForFinishingLoan() <= 0){
-          status = LoanStatus.FINISHED;
-          finishingTime = getCurrentTime();
-      }
+        if (moneyRaisedSoFar() >= 0) {
+            status = LoanStatus.PENDING;
+        }
+        if (moneyRaisedSoFar() >= loanAmount) {
+            status = LoanStatus.ACTIVE;
+            startingTime = getCurrentTime();
+        }
+        if (thereIsAnUnpaidLoanPayment()) {
+            status = LoanStatus.RISK;
+        }
+        if (getFundLeftForFinishingLoan() <= 0 && getInterestLeftForFinishingLoan() <= 0) {
+            status = LoanStatus.FINISHED;
+            finishingTime = getCurrentTime();
+        }
 
     }
 
     boolean thereIsAnUnpaidLoanPayment() {
-      for (Transaction t : loanPayments) {
-          if (t.isTransactionPassedSuccesfully() == false) {
-              return true;
-          }
-      }
-      return false;
+        for (Transaction t : loanPayments) {
+            if (t.isTransactionPassedSuccesfully() == false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private double getTotalInterestLoanNeedsToPay() {
-        return (getLoanAmount() * (getInterestRateInEveryPayment()/100) );
+        return (getLoanAmount() * (getInterestRateInEveryPayment() / 100));
     }
 
     private double getFundPaidSoFar() {
@@ -230,11 +237,11 @@ public class Loan {
     private int getTimeUnitsLeftForNextPayment() {
         int timeLeft = 0;
         if (loanPayments.size() > 0) {
-        int timeOfLastPayment = loanPayments.get(loanPayments.size() - 1).getTransactionTime();
-        timeOfLastPayment = timeOfLastPayment % getPaymentRatePerTimeUnits();
-        timeLeft = getPaymentRatePerTimeUnits() - timeOfLastPayment;
-        return timeLeft;
-        }else //the loan just became active
+            int timeOfLastPayment = loanPayments.get(loanPayments.size() - 1).getTransactionTime();
+            timeOfLastPayment = timeOfLastPayment % getPaymentRatePerTimeUnits();
+            timeLeft = getPaymentRatePerTimeUnits() - timeOfLastPayment;
+            return timeLeft;
+        } else //the loan just became active
             return getPaymentRatePerTimeUnits();
     }
 
@@ -298,10 +305,14 @@ public class Loan {
         double interestPerOneTimeUnit = getInterestRateInEveryPayment() / getPaymentRatePerTimeUnits();
         return interestPerOneTimeUnit;
     }
+    public void setAccumalatedDebt(double accumalatedDebt){this.accumalatedDebt = accumalatedDebt;}
+    public void setLoanStatus(LoanStatus status){this.status = status;}
+
 
     public boolean isLoanNewOrPending() {
         return status == LoanStatus.NEW || status == LoanStatus.PENDING;
     }
+
     public boolean isLoanActive() {
         if (status == LoanStatus.ACTIVE) {
             return true;
@@ -316,5 +327,41 @@ public class Loan {
     public Loan() //empty ctor
     {
 
+    }
+
+    public int getTotalAmountOfPayments() {
+        if ((totalAmountOfTimeUnits) % paymentRatePerTimeUnits == 0) {
+            return (totalAmountOfTimeUnits) / paymentRatePerTimeUnits;
+        } else {
+            return (totalAmountOfTimeUnits) / paymentRatePerTimeUnits + 1;
+        }
+    }
+
+    public double calculateMoneyToPay(int currentTime) {
+        double moneyToPay;
+        double regularPayment = (loanAmount / getTotalAmountOfPayments()) * interestRateInEveryPayment + accumalatedDebt;
+
+        if (currentTime > startingTime + totalAmountOfTimeUnits) {
+            moneyToPay = accumalatedDebt;
+        } else if (currentTime == startingTime + totalAmountOfTimeUnits) {
+            if (finishingTime - startingTime / getTotalAmountOfPayments() == 0) {
+                moneyToPay = regularPayment;
+            } else {
+                moneyToPay = (loanAmount - ((getTotalAmountOfPayments() - 1) * regularPayment)) * interestRateInEveryPayment;
+            }
+
+        } else {
+            moneyToPay = regularPayment;
+        }
+        return moneyToPay;
+
+    }
+
+
+
+    public void updateDebt(double debtAdded)
+    {
+        status = LoanStatus.RISK;
+        accumalatedDebt += debtAdded;
     }
 }
