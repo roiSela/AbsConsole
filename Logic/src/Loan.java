@@ -339,18 +339,14 @@ public class Loan {
 
     public double calculateMoneyToPay(int currentTime) {
         double moneyToPay;
-        double regularPayment = (loanAmount / getTotalAmountOfPayments()) * interestRateInEveryPayment + accumalatedDebt;
+        double fundComponent = loanAmount / getTotalAmountOfPayments();
+        double interestComponent = fundComponent * interestRateInEveryPayment;
+        double regularPayment = fundComponent + interestComponent + accumalatedDebt;
 
         if (currentTime > startingTime + totalAmountOfTimeUnits) {
             moneyToPay = accumalatedDebt;
-        } else if (currentTime == startingTime + totalAmountOfTimeUnits) {
-            if (finishingTime - startingTime / getTotalAmountOfPayments() == 0) {
-                moneyToPay = regularPayment;
-            } else {
-                moneyToPay = (loanAmount - ((getTotalAmountOfPayments() - 1) * regularPayment)) * interestRateInEveryPayment;
-            }
-
-        } else {
+        }
+        else {
             moneyToPay = regularPayment;
         }
         return moneyToPay;

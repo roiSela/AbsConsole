@@ -355,6 +355,9 @@ public class Bank implements BankActions {
     @Override //section 7
     public boolean RaiseTheTimeLine() {
         currentTime++;
+        for(Customer customer : customers){
+            payForLoans(customer);
+        }
         return false;
     }
 
@@ -373,12 +376,12 @@ public class Bank implements BankActions {
             }
         }
 
-        sortLoans(loansToPayToday);
+        sortLoans(loansToPayToday); // todo
         for(Loan loan : loansToPayToday){
             if(loan.calculateMoneyToPay(currentTime) > customerAccount.getCurrentBalance()){
                 loan.updateDebt(loan.calculateMoneyToPay(currentTime));
             }
-            else{
+            else{ // he can pay
 
                Transaction loanPayment = new Transaction(1, loan.calculateMoneyToPay(currentTime), loan.getInterestPerOneTimeUnit(),loan.getInterestRateInEveryPayment(),currentTime,true);
                customerAccount.getCustomerTransactions().add(loanPayment);
@@ -393,8 +396,10 @@ public class Bank implements BankActions {
                }
 
                for(Investment investment : loan.getInvestments()){
-                   double investmentPart = loan.getLoanAmount() / investment.getSizeOfInvestment();
-                   double paymentAmmount = loan.calculateMoneyToPay(currentTime) / investmentPart;
+                   double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
+                   double paymentFundComponent = loan.calculateMoneyToPay(currentTime) * investmentPart;
+                   double interestComponent = paymentFundComponent * loan.getInterestRateInEveryPayment();
+                   double paymentAmmount = paymentFundComponent + interestComponent ;
                    Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
                    payInvestment(paymentAmmount, investedCustomer);
                }

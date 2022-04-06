@@ -74,6 +74,7 @@ public class
                         bank = matchLoansForClient(bank, input);
                         break;
                     case "7":
+                        bank.RaiseTheTimeLine();
 
                         break;
                     case "8":
