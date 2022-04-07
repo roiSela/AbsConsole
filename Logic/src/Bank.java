@@ -352,6 +352,8 @@ public class Bank implements BankActions {
         return customers.get(customerIndex).getCustomerAccount().getCurrentBalance();
     }
 
+
+
     @Override //section 7
     public boolean RaiseTheTimeLine() {
         currentTime++;
@@ -379,7 +381,7 @@ public class Bank implements BankActions {
         sortLoans(loansToPayToday); // todo
         for(Loan loan : loansToPayToday){
             if(loan.calculateMoneyToPay(currentTime) > customerAccount.getCurrentBalance()){
-                loan.updateDebt(loan.calculateMoneyToPay(currentTime));
+                    loan.updateDebt(loan.calculateMoneyToPay(currentTime));
             }
             else{ // he can pay
 
@@ -397,9 +399,7 @@ public class Bank implements BankActions {
 
                for(Investment investment : loan.getInvestments()){
                    double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
-                   double paymentFundComponent = loan.calculateMoneyToPay(currentTime) * investmentPart;
-                   double interestComponent = paymentFundComponent * loan.getInterestRateInEveryPayment();
-                   double paymentAmmount = paymentFundComponent + interestComponent ;
+                   double paymentAmmount = loan.calculateMoneyToPay(currentTime) * investmentPart;
                    Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
                    payInvestment(paymentAmmount, investedCustomer);
                }

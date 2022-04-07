@@ -74,7 +74,9 @@ public class
                         bank = matchLoansForClient(bank, input);
                         break;
                     case "7":
+                        System.out.println("The current time is: " + Bank.getCurrentTime() +'\n' + "the time after raise is " + (Bank.getCurrentTime() + 1) ) ;
                         bank.RaiseTheTimeLine();
+
 
                         break;
                     case "8":

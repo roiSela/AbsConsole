@@ -21,7 +21,7 @@ public class Loan {
     private List<Investment> investments; //list of investing customers and their size of investments.
     private List<Transaction> loanPayments; //the payments that the loan did so far
     private LoanStatus status;
-    private double accumalatedDebt; ///the total debt acculumated to this moment
+    private double accumalatedDebt = 0; ///the total debt acculumated to this moment
 
     private int startingTime; //time loan became active
     private int finishingTime; // time loan is finished
@@ -340,7 +340,7 @@ public class Loan {
     public double calculateMoneyToPay(int currentTime) {
         double moneyToPay;
         double fundComponent = loanAmount / getTotalAmountOfPayments();
-        double interestComponent = fundComponent * interestRateInEveryPayment;
+        double interestComponent = fundComponent * interestRateInEveryPayment / 100;
         double regularPayment = fundComponent + interestComponent + accumalatedDebt;
 
         if (currentTime > startingTime + totalAmountOfTimeUnits) {
@@ -355,9 +355,11 @@ public class Loan {
 
 
 
-    public void updateDebt(double debtAdded)
+
+
+    public void updateDebt(double newDebt)
     {
         status = LoanStatus.RISK;
-        accumalatedDebt += debtAdded;
+        accumalatedDebt = newDebt;
     }
 }
