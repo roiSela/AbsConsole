@@ -1,4 +1,6 @@
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     private static int trancsactionIdCounter = 1;
     private int transactionId;
     private int transactionTime;

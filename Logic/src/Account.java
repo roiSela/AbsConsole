@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-public class Account {
+public class Account implements Serializable {
     private List<Transaction> customerTransactions;
     private double currentBalance;
 

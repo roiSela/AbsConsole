@@ -1,9 +1,10 @@
 import generated.AbsLoan;
 
+import java.io.Serializable;
 import java.util.*;
 
 
-public class Loan {
+public class Loan implements Serializable {
 
     enum LoanStatus {NEW, PENDING, RISK, ACTIVE, FINISHED}
 
@@ -178,7 +179,7 @@ public class Loan {
         updateLoanStatus();
     }
 
-    //update loan status
+    //update the status of loan according to investments and payments
     public void updateLoanStatus() {
         if (moneyRaisedSoFar() >= 0) {
             status = LoanStatus.PENDING;
