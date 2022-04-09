@@ -12,7 +12,7 @@ public class
         String fileToSaveSystemData = "";
         String running = "-1";
         while (!running.equals("8")) {
-            System.out.println("Please enter a whole number between 1 and 8 in order to choose an option.");
+            System.out.println("Please enter a whole number between 1 and 10 in order to choose an option.");
             System.out.println("1 - Load system details from file.");
             System.out.println("2 - Show data of all loans.");
             System.out.println("3- Show data of all customers.");
@@ -126,8 +126,12 @@ public class
         double minimalInterestDouble = chooseMinimalInterest(bank, input);
         int maximalLoanTimeInt = chooseMaximalLoanTime(bank, input);
         List<Loan> matchedLoans = bank.getFilteredLoans(customerIndexInt, investmentAmount, filteredLoanCategories, minimalInterestDouble, maximalLoanTimeInt);
-        List<Loan> matchedLoansChosen = chooseMatchedLoans(bank, input, matchedLoans);
-        bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen);
+        if (matchedLoans.size() == 0) {
+            System.out.println("There are no loans to invest in.");
+        }else {
+            List<Loan> matchedLoansChosen = chooseMatchedLoans(bank, input, matchedLoans);
+            bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen);
+        }
         return bank;
     }
 
