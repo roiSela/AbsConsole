@@ -378,16 +378,17 @@ public class Bank implements BankActions {
             }
         }
 
+
         sortLoans(loansToPayToday); // todo
         for(Loan loan : loansToPayToday){
-            if(loan.calculateMoneyToPay(currentTime) > customerAccount.getCurrentBalance()){
-                    loan.updateDebt(loan.calculateMoneyToPay(currentTime));
+            if(loan.getMoneyTopay(currentTime) > customerAccount.getCurrentBalance()){
+                    loan.updateDebt(loan.getMoneyTopay(currentTime));
             }
             else{ // he can pay
 
-               Transaction loanPayment = new Transaction(1, loan.calculateMoneyToPay(currentTime), loan.getInterestPerOneTimeUnit(),loan.getInterestRateInEveryPayment(),currentTime,true);
+               Transaction loanPayment = new Transaction(loan.getMoneyTopay(currentTime),currentTime,"-",customerAccount.getCurrentBalance(),customerAccount.getCurrentBalance() + loan.getMoneyTopay(currentTime));
                customerAccount.getCustomerTransactions().add(loanPayment);
-               customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.calculateMoneyToPay(currentTime));
+               customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.getMoneyTopay(currentTime));
                loan.getLoanPayments().add(loanPayment);
                loan.setAccumalatedDebt(0);
                if(currentTime >= loan.getStartingTime() + loan.getTotalAmountOfTimeUnits()){
@@ -399,7 +400,7 @@ public class Bank implements BankActions {
 
                for(Investment investment : loan.getInvestments()){
                    double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
-                   double paymentAmmount = loan.calculateMoneyToPay(currentTime) * investmentPart;
+                   double paymentAmmount = loan.getMoneyTopay(currentTime) * investmentPart;
                    Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
                    payInvestment(paymentAmmount, investedCustomer);
                }

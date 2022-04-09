@@ -337,7 +337,7 @@ public class Loan {
         }
     }
 
-    public double calculateMoneyToPay(int currentTime) {
+    public double getMoneyTopay(int currentTime) {
         double moneyToPay;
         double fundComponent = loanAmount / getTotalAmountOfPayments();
         double interestComponent = fundComponent * interestRateInEveryPayment / 100;
