@@ -9,6 +9,7 @@ public class
     public static void main(String[] args) {
         Bank bank = new Bank();
         Scanner input = new Scanner(System.in);
+        String fileToSaveSystemData = "";
         String running = "-1";
         while (!running.equals("8")) {
             System.out.println("Please enter a whole number between 1 and 8 in order to choose an option.");
@@ -20,6 +21,8 @@ public class
             System.out.println("6 - Schedule loans for customer.");
             System.out.println("7 - Promote time by one time unit and pay loans.");
             System.out.println("8 - exit the system.");
+            System.out.println("9 - bonus: save system data to a txt file, please enter the file path:");
+            System.out.println("10 - bonus: extract last saved system data.");
 
             // This method reads the number provided using keyboard
             try {
@@ -55,8 +58,6 @@ public class
                         Scanner doubleInput  = new Scanner(System.in);
                         Double moneyToLoad = doubleInput.nextDouble();
                         bank.putMoneyInAccount(moneyToLoad, customerNumber - 1 );
-
-
                         break;
                     case "5":
                         System.out.println("Choose Customer to take money :");
@@ -71,16 +72,37 @@ public class
 
                         break;
                     case "6":
-                        bank = matchLoansForClient(bank, input);
+                        boolean areThereAnyLoansToInvestIn = bank.isThereAtLeastOneNewOrPendingLoan();
+                        if (areThereAnyLoansToInvestIn) {
+                            bank = matchLoansForClient(bank, input);
+                        }else {
+                            System.out.println("There are no loans to invest in, please choose another option.");
+                        }
                         break;
                     case "7":
                         System.out.println("The current time is: " + Bank.getCurrentTime() +'\n' + "the time after raise is " + (Bank.getCurrentTime() + 1) ) ;
                         bank.RaiseTheTimeLine();
-
-
                         break;
                     case "8":
                         System.out.println("Exiting the system.");
+                        break;
+                    case "9":
+                        System.out.println("Please enter the file path:");
+                        fileToSaveSystemData = input.nextLine();
+                        boolean isFileValid = saveCurrentSystemData(bank, fileToSaveSystemData);
+                        if (isFileValid) {
+                            System.out.println("The system data was saved successfully.");
+                        } else {
+                            System.out.println("The system data was not saved successfully.");
+                        }
+                        break;
+                    case "10":
+                        if (fileToSaveSystemData.equals("")) {
+                            System.out.println("There is no file to extract.");
+                        } else {
+                            bank = getLastSavedSystemData(fileToSaveSystemData);
+                            System.out.println("The system data was extracted successfully.");
+                        }
                         break;
                     default:
                         System.out.print("The option you choose does not exist.");
@@ -120,9 +142,9 @@ public class
         while (running) {
             String loanIndex = input.nextLine();
             if (loanIndex.equals("")) { //the user ended his choice
-                if(matchedLoansChosenInt == -1){
+                if (matchedLoansChosenInt == -1) {
                     System.out.println("You did not choose any loan, please try again.");
-                }else {
+                } else {
                     running = false;
                 }
             } else {//we check if he entered a valid index
@@ -270,6 +292,30 @@ public class
         for (String customerNameAndBalance : customerNamesAndBalance) {
             System.out.println(customerNameAndBalance);
         }
+    }
+
+    public static boolean saveCurrentSystemData(Bank bank, String filePath) throws IOException {
+        try {
+            if (!filePath.endsWith(".txt")) {
+                return false;
+            }
+            FileOutputStream f = new FileOutputStream(new File(filePath));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            o.writeObject(bank);
+            o.close();
+            f.close();
+            return true;
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+        return false;
+    }
+
+    public static Bank getLastSavedSystemData(String filePath) throws IOException, ClassNotFoundException {
+        FileInputStream fi = new FileInputStream(new File(filePath));
+        ObjectInputStream oi = new ObjectInputStream(fi);
+        Bank bank = (Bank) oi.readObject();
+        return bank;
     }
 }
 

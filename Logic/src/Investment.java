@@ -1,4 +1,6 @@
-public class Investment {
+import java.io.Serializable;
+
+public class Investment implements Serializable {
 
     private String nameOfCustomer;
     private double sizeOfInvestment;

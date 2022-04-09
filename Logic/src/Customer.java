@@ -1,9 +1,10 @@
 
 import generated.AbsCustomer;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Customer {
+public class Customer implements Serializable {
     private String name;
     private Account account;
     private List<String> idListOfLoansThatCustomerInvestedIn; //all the loads that we invested in

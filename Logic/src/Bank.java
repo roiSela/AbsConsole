@@ -2,16 +2,13 @@
 import generated.*;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 
-public class Bank implements BankActions {
+public class Bank implements BankActions, Serializable {
     private static int currentTime;
     private List<Customer> customers;
     private List<Loan> allTheLoans;
@@ -267,10 +264,19 @@ public class Bank implements BankActions {
                 loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
                 customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter),getCurrentTime());
                 customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
+                if (loan.isLoanActive()) { //if the loan became active, we need to transfer the loan amount to the loan owner
+                        String loanOwner = loan.getNameOfCreatingCustomer();
+                        //find the customer who created the loan
+                        for (int i = 0; i < customers.size(); i++) {
+                            if (customers.get(i).getCustomerName().equals(loanOwner)) {
+                                customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(),getCurrentTime());
+                                break;
+                            }
+                        }
+                }
                 counter++;
             }
         }
-        //customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(moneyToInvestCopy, getCurrentTime());
         return true;
     }
 
@@ -352,6 +358,14 @@ public class Bank implements BankActions {
         return customers.get(customerIndex).getCustomerAccount().getCurrentBalance();
     }
 
+    boolean isThereAtLeastOneNewOrPendingLoan() {
+        for (Loan loan : allTheLoans) {
+            if (loan.isLoanNewOrPending()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     @Override //section 7
@@ -441,6 +455,8 @@ public class Bank implements BankActions {
         }
         return null;
     }
+
+
 }
 
 
