@@ -3,7 +3,7 @@ import java.util.*;
 
 
 public class
-        Main {
+Main {
     // enum MenuOptions {READ_FILE , LOANS_DATA, CUSTOMERS_DATA, LOAD_MONEY, WITHDRAW_MONEY, SCHEDULING, PROMOTING_TIMELINE, EXIT}
 
     public static void main(String[] args) {
