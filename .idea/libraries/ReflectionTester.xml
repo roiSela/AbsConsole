@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ReflectionTester">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Refliction/reflection-tester/ReflectionTester.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
