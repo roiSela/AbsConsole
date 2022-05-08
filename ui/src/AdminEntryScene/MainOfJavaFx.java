@@ -3,6 +3,7 @@ package AdminEntryScene;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Bank;
@@ -17,7 +18,7 @@ public class MainOfJavaFx extends Application {
         // load main fxml
         URL mainFXML = getClass().getResource("AdminEntrySceneFxml.fxml");
         loader.setLocation(mainFXML);
-        BorderPane root = loader.load(); //if the scroll pane is wraped around border pane, should i write border pane in here?
+        ScrollPane root = loader.load(); //if the scroll pane is wraped around border pane, should i write border pane in here?
 
         // wire up controller
        AdminEntryController adminEntryController = loader.getController();
@@ -27,7 +28,7 @@ public class MainOfJavaFx extends Application {
 
         // set stage
         primaryStage.setTitle("Alternative Banking System using javaFX");
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
