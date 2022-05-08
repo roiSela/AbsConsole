@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ABS javaFx/ABS javaFx.iml" filepath="$PROJECT_DIR$/ABS javaFx/ABS javaFx.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ABS javaFx/Logic/Logic.iml" filepath="$PROJECT_DIR$/ABS javaFx/Logic/Logic.iml" />
-      <module fileurl="file://$PROJECT_DIR$/UserInterface/UserInterface.iml" filepath="$PROJECT_DIR$/UserInterface/UserInterface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AbsProjectJavaFx.iml" filepath="$PROJECT_DIR$/AbsProjectJavaFx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/logic/logic.iml" filepath="$PROJECT_DIR$/logic/logic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" />
     </modules>
   </component>
 </project>
