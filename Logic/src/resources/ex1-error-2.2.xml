@@ -8,7 +8,7 @@
 	<abs-loans>
 		<abs-loan id="stock market introduction">
 			<abs-owner>Menash</abs-owner>
-			<abs-category>Investment</abs-category>
+			<abs-category>model.Investment</abs-category>
 			<abs-capital>2400</abs-capital>
 			<abs-total-yaz-time>12</abs-total-yaz-time>
 			<abs-pays-every-yaz>1</abs-pays-every-yaz>

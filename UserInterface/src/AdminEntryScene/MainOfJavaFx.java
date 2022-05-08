@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.Bank;
 
 import java.net.URL;
 
@@ -20,9 +21,9 @@ public class MainOfJavaFx extends Application {
 
         // wire up controller
        AdminEntryController adminEntryController = loader.getController();
-        //Bank bank = new Bank();
-        adminEntryController.setPrimaryStage(primaryStage);
-       // adminEntryController.setBusinessLogic(bank);
+       Bank bank = new model.Bank();
+       adminEntryController.setPrimaryStage(primaryStage);
+       adminEntryController.setBusinessLogic(bank);
 
         // set stage
         primaryStage.setTitle("Alternative Banking System using javaFX");

@@ -42,7 +42,7 @@
               </rowConstraints>
                <children>
                   <Button fx:id="LoansButton" mnemonicParsing="false" onAction="#LoansButtonPressed" prefHeight="100.0" prefWidth="464.0" text="Loans" />
-                  <Button fx:id="customerInfoButton" mnemonicParsing="false" onAction="#customerInfoButtonPressed" prefHeight="100.0" prefWidth="460.0" text="Customer Information" GridPane.rowIndex="1" />
+                  <Button fx:id="customerInfoButton" mnemonicParsing="false" onAction="#customerInfoButtonPressed" prefHeight="100.0" prefWidth="460.0" text="model.Customer Information" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </center>
