@@ -1,4 +1,4 @@
-package main;
+package mainOfEx1;
 
 import model.Bank;
 import model.Loan;

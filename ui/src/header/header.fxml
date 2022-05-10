@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="header.HeaderController">
+   <content>
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="834.0" spacing="10.0">
+         <children>
+            <ComboBox fx:id="userModeComboBox" onAction="#changeUserMode" prefHeight="100.0" prefWidth="222.0" promptText="Admin mode" />
+            <ScrollPane prefHeight="203.0" prefWidth="220.0">
+               <content>
+                  <TextField prefHeight="80.0" prefWidth="498.0" style="-fx-background-color: pink;" text="Currently loaded file path" />
+               </content>
+            </ScrollPane>
+            <Label text="Current Yaz:" />
+            <Label fx:id="currentYazLable" prefHeight="33.0" prefWidth="263.0" style="-fx-background-color: pink;" text="0" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
+   </content>
+</ScrollPane>

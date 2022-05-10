@@ -1,46 +1,37 @@
-package AdminEntryScene;
+package adminbody;
 
+import app.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Bank;
+
 import java.io.File;
 
-public class AdminEntryController{
-
-    @FXML
-    private Label currenlyLoadedFileText;
-
-    @FXML
-    private Label CurrentYazText;
-
-    @FXML
-    private Button LoansButton;
-
-    @FXML
-    private Button customerInfoButton;
+public class AdminBodyController {
 
     @FXML
     private Button increaseYazButton;
 
     @FXML
-    private Button LoadFileButton;
+    private Button loadFileButton;
 
+    @FXML
+    private TableView<?> loansTable;
+
+    @FXML
+    private TableView<?> customersInformationTable;
+
+    private AppController mainController;
     private Bank businessLogic;
     private Stage primaryStage;
 
-
-    @FXML
-    public void initialize() {
-        System.out.println("Init line");
+    public void setMainController(AppController mainController) {
+        this.mainController = mainController;
     }
-    public AdminEntryController(){
-
-    }
-
     public void setBusinessLogic(Bank businessLogic) {
         this.businessLogic = businessLogic;
     }
@@ -49,9 +40,13 @@ public class AdminEntryController{
         this.primaryStage = primaryStage;
     }
 
+    @FXML
+    void increaseYazButtonPressed(ActionEvent event) {
+
+    }
 
     @FXML
-    void LoadFileButtonPressed(ActionEvent event) {
+    void loadFileButtonPressed(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select xml data file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
@@ -62,21 +57,6 @@ public class AdminEntryController{
 
         String absolutePath = selectedFile.getAbsolutePath();
         System.out.println(absolutePath);
-    }
-
-    @FXML
-    void LoansButtonPressed(ActionEvent event) {
-
-    }
-
-    @FXML
-    void customerInfoButtonPressed(ActionEvent event) {
-
-    }
-
-    @FXML
-    void increaseYazButtonPressed(ActionEvent event) {
-
     }
 
 }
