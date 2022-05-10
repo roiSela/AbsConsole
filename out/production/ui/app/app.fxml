@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="622.0" prefWidth="824.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AppController">
+   <center>
+      <fx:include fx:id="bodyComponent" source="../adminbody/adminBody.fxml" />
+   </center>
+   <top>
+      <fx:include fx:id="headerComponent" source="../header/header.fxml" />
+   </top>
+</BorderPane>
