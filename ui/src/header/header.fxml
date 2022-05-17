@@ -9,12 +9,12 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="header.HeaderController">
    <content>
-      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="834.0" spacing="10.0">
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="1183.0" spacing="10.0">
          <children>
             <ComboBox fx:id="userModeComboBox" onAction="#changeUserMode" prefHeight="100.0" prefWidth="222.0" promptText="Admin mode" />
-            <ScrollPane prefHeight="203.0" prefWidth="220.0">
+            <ScrollPane prefHeight="203.0" prefWidth="547.0">
                <content>
-                  <TextField prefHeight="80.0" prefWidth="498.0" style="-fx-background-color: pink;" text="Currently loaded file path" />
+                  <TextField fx:id="fileText" prefHeight="80.0" prefWidth="498.0" style="-fx-background-color: pink;" text="Currently loaded file path" />
                </content>
             </ScrollPane>
             <Label text="Current Yaz:" />
