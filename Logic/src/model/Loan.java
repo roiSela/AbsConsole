@@ -304,6 +304,8 @@ public class Loan implements Serializable {
         return finishingTime;
     }
 
+    public double getAccumalatedDebt() {return accumalatedDebt;}
+
     public double getInterestPerOneTimeUnit() { //for filtering loans by interest per one time unit in section 6
         double interestPerOneTimeUnit = getInterestRateInEveryPayment() / getPaymentRatePerTimeUnits();
         return interestPerOneTimeUnit;
