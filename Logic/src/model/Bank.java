@@ -1,6 +1,10 @@
 package model;
 
 import generated.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.classesForTables.CustomerTableObj;
+import model.classesForTables.LoanTableObj;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -193,19 +197,17 @@ public class Bank implements BankActions, Serializable {
         return true;
     }
 
-    public String printAllCustomerNames(){
+    public String printAllCustomerNames() {
 
         String allCustomerNames = "";
         int currentCustomer = 1;
-        for(Customer customer : customers){
+        for (Customer customer : customers) {
             allCustomerNames += currentCustomer + ". " + customer.getCustomerName() + '\n';
-            currentCustomer ++;
+            currentCustomer++;
         }
 
         return allCustomerNames;
     }
-
-
 
 
     @Override//section 6
@@ -263,17 +265,17 @@ public class Bank implements BankActions, Serializable {
         for (Loan loan : allTheLoans) {
             if (loansForSchedulingNames.contains(loan.getLoanName())) {
                 loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
-                customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter),getCurrentTime());
+                customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter), getCurrentTime());
                 customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
                 if (loan.isLoanActive()) { //if the loan became active, we need to transfer the loan amount to the loan owner
-                        String loanOwner = loan.getNameOfCreatingCustomer();
-                        //find the customer who created the loan
-                        for (int i = 0; i < customers.size(); i++) {
-                            if (customers.get(i).getCustomerName().equals(loanOwner)) {
-                                customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(),getCurrentTime());
-                                break;
-                            }
+                    String loanOwner = loan.getNameOfCreatingCustomer();
+                    //find the customer who created the loan
+                    for (int i = 0; i < customers.size(); i++) {
+                        if (customers.get(i).getCustomerName().equals(loanOwner)) {
+                            customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(), getCurrentTime());
+                            break;
                         }
+                    }
                 }
                 counter++;
             }
@@ -315,7 +317,7 @@ public class Bank implements BankActions, Serializable {
         return numberOfnewOrPendingLoans;
     }
 
-    //utility function for section 6
+    //utility function for section 6 (we use -1 to indicate that the user did not use the limitations)
     public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment) {
 
         List<Loan> filteredLoans = new ArrayList<>();
@@ -372,71 +374,67 @@ public class Bank implements BankActions, Serializable {
     @Override //section 7
     public boolean RaiseTheTimeLine() {
         currentTime++;
-        for(Customer customer : customers){
+        for (Customer customer : customers) {
             payForLoans(customer);
         }
         return false;
     }
 
-    public void payForLoans(Customer customer){
+    public void payForLoans(Customer customer) {
 
         Account customerAccount = customer.getCustomerAccount();
         List<Loan> customerLoans = customer.getLoansCustomerCreated();
         List<Loan> loansToPayToday = new ArrayList<>(); // list of loans for payment during this timeframe
-        for (Loan loan : customerLoans){
-            if(loan.getStatus() == Loan.LoanStatus.RISK){
+        for (Loan loan : customerLoans) {
+            if (loan.getStatus() == Loan.LoanStatus.RISK) {
                 loansToPayToday.add(loan);
-            }
-            else if(loan.getStatus() == Loan.LoanStatus.ACTIVE){
-                if(loan.isPaymentDay(currentTime))
+            } else if (loan.getStatus() == Loan.LoanStatus.ACTIVE) {
+                if (loan.isPaymentDay(currentTime))
                     loansToPayToday.add(loan);
             }
         }
 
 
         sortLoans(loansToPayToday); // todo
-        for(Loan loan : loansToPayToday){
-            if(loan.getMoneyTopay(currentTime) > customerAccount.getCurrentBalance()){
-                    loan.updateDebt(loan.getMoneyTopay(currentTime));
-            }
-            else{ // he can pay
+        for (Loan loan : loansToPayToday) {
+            if (loan.getMoneyTopay(currentTime) > customerAccount.getCurrentBalance()) {
+                loan.updateDebt(loan.getMoneyTopay(currentTime));
+            } else { // he can pay
 
-               Transaction loanPayment = new Transaction(loan.getMoneyTopay(currentTime),currentTime,"-",customerAccount.getCurrentBalance(),customerAccount.getCurrentBalance() + loan.getMoneyTopay(currentTime));
-               customerAccount.getCustomerTransactions().add(loanPayment);
-               customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.getMoneyTopay(currentTime));
-               loan.getLoanPayments().add(loanPayment);
-               loan.setAccumalatedDebt(0);
-               if(currentTime >= loan.getStartingTime() + loan.getTotalAmountOfTimeUnits()){
-                   loan.setLoanStatus(Loan.LoanStatus.FINISHED);
-               }
-               else{
-                   loan.setLoanStatus(Loan.LoanStatus.ACTIVE);
-               }
+                Transaction loanPayment = new Transaction(loan.getMoneyTopay(currentTime), currentTime, "-", customerAccount.getCurrentBalance(), customerAccount.getCurrentBalance() + loan.getMoneyTopay(currentTime));
+                customerAccount.getCustomerTransactions().add(loanPayment);
+                customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.getMoneyTopay(currentTime));
+                loan.getLoanPayments().add(loanPayment);
+                loan.setAccumalatedDebt(0);
+                if (currentTime >= loan.getStartingTime() + loan.getTotalAmountOfTimeUnits()) {
+                    loan.setLoanStatus(Loan.LoanStatus.FINISHED);
+                } else {
+                    loan.setLoanStatus(Loan.LoanStatus.ACTIVE);
+                }
 
-               for(Investment investment : loan.getInvestments()){
-                   double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
-                   double paymentAmmount = loan.getMoneyTopay(currentTime) * investmentPart;
-                   Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
-                   payInvestment(paymentAmmount, investedCustomer);
-               }
+                for (Investment investment : loan.getInvestments()) {
+                    double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
+                    double paymentAmmount = loan.getMoneyTopay(currentTime) * investmentPart;
+                    Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
+                    payInvestment(paymentAmmount, investedCustomer);
+                }
             }
 
         }
-        
+
     }
 
-    public void payInvestment(double paymentAmmount, Customer customer){
+    public void payInvestment(double paymentAmmount, Customer customer) {
         Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() + paymentAmmount);
         Account customerAccount = customer.getCustomerAccount();
-        customerAccount .getCustomerTransactions().add(paymentToinvestor);
-        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
+        customerAccount.getCustomerTransactions().add(paymentToinvestor);
+        customerAccount.setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
 
     }
 
-    public void sortLoans( List<Loan> loansToPayToday){
+    public void sortLoans(List<Loan> loansToPayToday) {
 
     }
-
 
 
     public List<String> getLoanCategories() {
@@ -447,14 +445,143 @@ public class Bank implements BankActions, Serializable {
         return currentTime;
     }
 
-    public  Customer getCustomerByName(String customerName){
-        for(Customer customer : customers){
-            if(customer.getCustomerName().equals(customerName)) {
+    public Customer getCustomerByName(String customerName) {
+        for (Customer customer : customers) {
+            if (customer.getCustomerName().equals(customerName)) {
                 return customer;
 
             }
         }
         return null;
+    }
+
+
+    //function to fill the customer information in the admin panel
+    public ObservableList<CustomerTableObj> getCustomersInformationForTable() {
+        ObservableList<CustomerTableObj> customersInformation = FXCollections.observableArrayList();
+        for (Customer customer : customers) {
+            String customerName = customer.getCustomerName();
+            String customerBalance = customer.getCustomerAccount().getCurrentBalance() + "";
+            String LoansWeInvestedIn = getLoansThatCustomerInvestedIn(customer);
+            String LoansWeCreated = getLoansThatCustomerCreated(customer);
+            CustomerTableObj tableCust = new CustomerTableObj(customerName, customerBalance, LoansWeInvestedIn, LoansWeCreated);
+            customersInformation.add(tableCust);
+        }
+        return customersInformation;
+    }
+
+    //util function to get the loans that a customer invested in
+    private String getLoansThatCustomerCreated(Customer customer) {
+        String LoansCustomerCreated = "";
+        Integer newStatus = 0;
+        Integer pending = 0;
+        Integer active = 0;
+        Integer risk = 0;
+        Integer finished = 0;
+
+        for (Loan loan : allTheLoans) {
+            if (loan.getNameOfCreatingCustomer().equals(customer.getCustomerName())) {
+                Loan.LoanStatus loanStatus = loan.getStatus();
+                switch (loanStatus) {
+                    case NEW:
+                        newStatus++;
+                        break;
+                    case PENDING:
+                        pending++;
+                        break;
+                    case ACTIVE:
+                        active++;
+                        break;
+                    case RISK:
+                        risk++;
+                        break;
+                    case FINISHED:
+                        finished++;
+                        break;
+                }
+            }
+        }
+        LoansCustomerCreated = "New: " + newStatus + " Pending: " + pending + " Active: " + active + " Risk: " + risk + " Finished: " + finished;
+        return LoansCustomerCreated;
+    }
+
+    //util function to get the loans that a customer created
+    private String getLoansThatCustomerInvestedIn(Customer customer) {
+        String LoansCustomerInvestedIn = "";
+        Integer newStatus = 0;
+        Integer pending = 0;
+        Integer active = 0;
+        Integer risk = 0;
+        Integer finished = 0;
+        for (Loan loan : allTheLoans) {
+            if (loan.isCustomerInvestedInThisLoan(customer.getCustomerName())) {
+                Loan.LoanStatus loanStatus = loan.getStatus();
+                switch (loanStatus) {
+                    case NEW:
+                        newStatus++;
+                        break;
+                    case PENDING:
+                        pending++;
+                        break;
+                    case ACTIVE:
+                        active++;
+                        break;
+                    case RISK:
+                        risk++;
+                        break;
+                    case FINISHED:
+                        finished++;
+                        break;
+                }
+            }
+        }
+        LoansCustomerInvestedIn = "New: " + newStatus + " Pending: " + pending + " Active: " + active + " Risk: " + risk + " Finished: " + finished;
+        return LoansCustomerInvestedIn;
+    }
+
+
+    public ObservableList<String> getNamesOfCustomers() {
+        ObservableList<String> namesOfCustomers = FXCollections.observableArrayList();
+        for (Customer customer : customers) {
+            namesOfCustomers.add(customer.getCustomerName());
+        }
+        return namesOfCustomers;
+    }
+
+
+    public ObservableList<LoanTableObj> getLoansInformationForTable() {
+        ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
+        for (Loan loan : allTheLoans) {
+            String id = loan.getLoanName();
+            String owner = loan.getNameOfCreatingCustomer();
+            String category = loan.getLoanCategory();
+            String amount = loan.getLoanAmount() + "";
+            String time = loan.getTotalAmountOfTimeUnits() + "";
+            String interest = loan.getInterestRateInEveryPayment() + "";
+            String rate = loan.getPaymentRatePerTimeUnits() + "";
+            String status = loan.getStatus().toString();
+            String pending = "";
+            String active = "";
+            String risk = "";
+            String finished = "";
+            switch (loan.getStatus()) {
+                case PENDING:
+                    pending = loan.pendingData();
+                    break;
+                case ACTIVE:
+                    active = loan.activeData();
+                    break;
+                case RISK:
+                    risk = loan.riskData();
+                    break;
+                case FINISHED:
+                    finished = loan.finishedData();
+                    break;
+            }
+            LoanTableObj obj = new LoanTableObj(id, owner, category, amount, time, interest, rate, status, pending, active, risk, finished);
+            loansInformationForTable.add(obj);
+        }
+        return loansInformationForTable;
     }
 
 
