@@ -358,13 +358,56 @@ public class Loan implements Serializable {
 
     }
 
-
-
-
-
     public void updateDebt(double newDebt)
     {
         status = LoanStatus.RISK;
         accumalatedDebt = newDebt;
     }
+
+    public boolean isCustomerInvestedInThisLoan(String customerName)
+    {
+        for(Investment investment : investments)
+        {
+            if(investment.getNameOfCustomer().equals(customerName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+//functions for loan table:
+    public String pendingData(){
+        String temp = "";
+        temp += getDataForPendingLoanStatus();
+        return temp;
+    }
+    public String riskData(){
+        String temp = "";
+        temp += getDataForActiveLoanStatus();
+        temp += "The unpaid payments (payment number and sum) are as follows:" + '\n';
+        int paymentNumber = 1;
+        for (Transaction t : loanPayments) {
+            if (!t.isTransactionPassedSuccesfully()) {
+                temp += "Payment number " + paymentNumber + "with sum of " + t.getTransactionAmount() + '\n';
+            }
+            paymentNumber++;
+        }
+        return temp;
+    }
+    public String finishedData(){
+        String temp = "";
+        temp += getDataForPendingLoanStatus();
+        temp += "The loan became active on time unit: " + getStartingTime() + '\n';
+        temp += "The loan was finished on time unit: " + getFinishingTime() + '\n';
+        temp += getLoanPaymentsSoFar();
+        return temp;
+    }
+    public String activeData(){
+        String temp = "";
+        temp += getDataForActiveLoanStatus();
+        return temp;
+    }
+
 }

@@ -157,7 +157,6 @@ public class AdminBodyController {
             return;
         } else {
             String absolutePath = selectedFile.getAbsolutePath();
-            System.out.println(absolutePath); //debug line
             String validFileRead = businessLogic.loadSystemDetailsFromFile(absolutePath);
             if (validFileRead.equals("The file and data were loaded successfully")) {
                 //update customers table

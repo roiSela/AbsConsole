@@ -19,16 +19,16 @@
                </children>
             </HBox>
             <Label prefHeight="28.0" prefWidth="143.0" text="Loans data:" />
-            <TableView fx:id="loansTable" prefHeight="147.0" prefWidth="603.0">
+            <TableView fx:id="loansTable" prefHeight="147.0" prefWidth="1246.0">
               <columns>
-                <TableColumn fx:id="id" prefWidth="75.0" text="id" />
-                <TableColumn fx:id="owner" prefWidth="75.0" text="owner" />
-                  <TableColumn fx:id="category" prefWidth="75.0" text="Category" />
-                  <TableColumn fx:id="amount" prefWidth="75.0" text="amount" />
-                  <TableColumn fx:id="time" prefWidth="102.0" text="original time" />
-                  <TableColumn fx:id="interest" minWidth="1.0" prefWidth="105.0" text="interest" />
-                  <TableColumn fx:id="rate" prefWidth="107.0" text="rate of payment" />
-                  <TableColumn fx:id="status" prefWidth="101.0" text="status" />
+                <TableColumn fx:id="id" prefWidth="91.0" text="id" />
+                <TableColumn fx:id="owner" prefWidth="95.99996948242188" text="owner" />
+                  <TableColumn fx:id="category" prefWidth="76.0" text="Category" />
+                  <TableColumn fx:id="amount" prefWidth="85.0" text="amount" />
+                  <TableColumn fx:id="time" prefWidth="86.0" text="original time" />
+                  <TableColumn fx:id="interest" minWidth="1.0" prefWidth="104.0" text="interest" />
+                  <TableColumn fx:id="rate" prefWidth="106.0" text="rate of payment" />
+                  <TableColumn fx:id="status" prefWidth="71.0" text="status" />
                   <TableColumn fx:id="pending" prefWidth="150.0" text="pending data" />
                   <TableColumn fx:id="active" prefWidth="122.0" text="Active data" />
                   <TableColumn fx:id="risk" prefWidth="128.0" text="Risk data" />
