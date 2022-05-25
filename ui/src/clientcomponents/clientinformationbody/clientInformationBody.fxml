@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="622.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientcomponents.clientinformationbody.ClientInformationBodyController">
+   <content>
+      <VBox prefHeight="622.0" prefWidth="837.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <HBox prefHeight="500.0" prefWidth="837.0">
+               <children>
+                  <VBox prefHeight="500.0" prefWidth="529.0">
+                     <children>
+                        <HBox prefHeight="28.0" prefWidth="529.0">
+                           <children>
+                              <Label text="Loaner loans data:" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="240.0" prefWidth="529.0">
+                           <children>
+                               <TableView fx:id="loansTable" prefHeight="147.0" prefWidth="1246.0">
+                                   <columns>
+                                       <TableColumn fx:id="id" prefWidth="91.0" text="id" />
+                                       <TableColumn fx:id="owner" prefWidth="95.99996948242188" text="owner" />
+                                       <TableColumn fx:id="category" prefWidth="76.0" text="Category" />
+                                       <TableColumn fx:id="amount" prefWidth="85.0" text="amount" />
+                                       <TableColumn fx:id="time" prefWidth="86.0" text="original time" />
+                                       <TableColumn fx:id="interest" minWidth="1.0" prefWidth="104.0" text="interest" />
+                                       <TableColumn fx:id="rate" prefWidth="106.0" text="rate of payment" />
+                                       <TableColumn fx:id="status" prefWidth="71.0" text="status" />
+                                       <TableColumn fx:id="pending" prefWidth="150.0" text="pending data" />
+                                       <TableColumn fx:id="active" prefWidth="122.0" text="Active data" />
+                                       <TableColumn fx:id="risk" prefWidth="128.0" text="Risk data" />
+                                       <TableColumn fx:id="finished" prefWidth="115.0" text="finished data" />
+                                   </columns>
+                               </TableView>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="29.0" prefWidth="529.0">
+                           <children>
+                              <Label text="Lender loans data:" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="208.0" prefWidth="529.0">
+                           <children>
+                              <TableView prefHeight="207.0" prefWidth="528.0">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="500.0" prefWidth="296.0">
+                     <children>
+                        <HBox prefHeight="27.0" prefWidth="296.0">
+                           <children>
+                              <Label text="Account transactions:" />
+                           </children>
+                        </HBox>
+                        <TableView prefHeight="472.0" prefWidth="296.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>
