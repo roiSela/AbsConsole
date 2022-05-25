@@ -374,65 +374,42 @@ public class Bank implements BankActions, Serializable {
     @Override //section 7
     public boolean RaiseTheTimeLine() {
         currentTime++;
-        for (Customer customer : customers) {
+        for(Customer customer : customers){
             payForLoans(customer);
         }
         return false;
     }
 
-    public void payForLoans(Customer customer) {
+    public void payForLoans(Customer customer){
+        customer.setCustomerMessage(null);
+        List<Loan> customerUnpaidLoans = customer.getLoansUnpaid();
+        for(Loan loan : customerUnpaidLoans){
+            loan.setLoanStatus(Loan.LoanStatus.RISK);
+        }
 
-        Account customerAccount = customer.getCustomerAccount();
         List<Loan> customerLoans = customer.getLoansCustomerCreated();
-        List<Loan> loansToPayToday = new ArrayList<>(); // list of loans for payment during this timeframe
+
         for (Loan loan : customerLoans) {
-            if (loan.getStatus() == Loan.LoanStatus.RISK) {
-                loansToPayToday.add(loan);
-            } else if (loan.getStatus() == Loan.LoanStatus.ACTIVE) {
-                if (loan.isPaymentDay(currentTime))
-                    loansToPayToday.add(loan);
-            }
+            if(loan.isPaymentDay(currentTime) && loan.getStatus() != Loan.LoanStatus.FINISHED)
+                customerUnpaidLoans.add(loan);
         }
 
-
-        sortLoans(loansToPayToday); // todo
-        for (Loan loan : loansToPayToday) {
-            if (loan.getMoneyTopay(currentTime) > customerAccount.getCurrentBalance()) {
-                loan.updateDebt(loan.getMoneyTopay(currentTime));
-            } else { // he can pay
-
-                Transaction loanPayment = new Transaction(loan.getMoneyTopay(currentTime), currentTime, "-", customerAccount.getCurrentBalance(), customerAccount.getCurrentBalance() + loan.getMoneyTopay(currentTime));
-                customerAccount.getCustomerTransactions().add(loanPayment);
-                customerAccount.setAccountBalance(customerAccount.getCurrentBalance() - loan.getMoneyTopay(currentTime));
-                loan.getLoanPayments().add(loanPayment);
-                loan.setAccumalatedDebt(0);
-                if (currentTime >= loan.getStartingTime() + loan.getTotalAmountOfTimeUnits()) {
-                    loan.setLoanStatus(Loan.LoanStatus.FINISHED);
-                } else {
-                    loan.setLoanStatus(Loan.LoanStatus.ACTIVE);
-                }
-
-                for (Investment investment : loan.getInvestments()) {
-                    double investmentPart = investment.getSizeOfInvestment() / loan.getLoanAmount();
-                    double paymentAmmount = loan.getMoneyTopay(currentTime) * investmentPart;
-                    Customer investedCustomer = getCustomerByName(investment.getNameOfCustomer());
-                    payInvestment(paymentAmmount, investedCustomer);
-                }
-            }
-
+        for(Loan loan : customerUnpaidLoans)
+        {
+            Message newMessage = new Message(loan.getLoanName(), currentTime, loan.getMoneyTopay(currentTime));
+            customer.getCustomerMessage().add(newMessage);
         }
-
     }
 
-    public void payInvestment(double paymentAmmount, Customer customer) {
+    public void payInvestment(double paymentAmmount, Customer customer){
         Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() + paymentAmmount);
         Account customerAccount = customer.getCustomerAccount();
-        customerAccount.getCustomerTransactions().add(paymentToinvestor);
-        customerAccount.setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
+        customerAccount .getCustomerTransactions().add(paymentToinvestor);
+        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
 
     }
 
-    public void sortLoans(List<Loan> loansToPayToday) {
+    public void sortLoans( List<Loan> loansToPayToday){
 
     }
 

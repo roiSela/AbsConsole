@@ -17,10 +17,10 @@ public class MainOfJavaFx extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource("../app/app.fxml");
         fxmlLoader.setLocation(url);
-       BorderPane root = fxmlLoader.load(url.openStream());
-
+        BorderPane root = fxmlLoader.load(url.openStream());
         //show app the primary stage, and he will show it to the other components that need to see it, e.g the body, that needs it to the file chooser.
         AppController app = fxmlLoader.getController();
+        app.setRoot(root);
         app.setPrimaryStage(primaryStage);
         app.setBusinessLogic(new Bank());
         Scene scene = new Scene(root, 1400, 800);

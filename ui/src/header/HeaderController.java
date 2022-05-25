@@ -31,6 +31,14 @@ public class HeaderController {
 
     @FXML
     void changeUserMode(ActionEvent event) {
+        if(userModeComboBox.getValue() == "Admin"){
+            mainController.getRoot().setCenter(mainController.getBodyComponent());
+
+        }
+        else{
+            mainController.getRoot().setCenter(mainController.getClientInformationComponent());
+            mainController.setCurrentCustomer(businessLogic.getCustomerByName(userModeComboBox.getValue()));
+        }
 
     }
 
