@@ -212,7 +212,7 @@ public class Bank implements BankActions, Serializable {
 
 
     @Override//section 6
-    public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling) {
+    public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling, int maxPercentageOfOwnership) {
         loansForScheduling = createDeepCopyLoansList(loansForScheduling); //if we don't create a deep copy, the payments will be preformed twice.
         double moneyToInvestCopy = moneyToInvest;
         List<Double> howMuchToInvestInEachLoan = new ArrayList<>();
@@ -319,17 +319,21 @@ public class Bank implements BankActions, Serializable {
     }
 
     //utility function for section 6 (we use -1 to indicate that the user did not use the limitations)
-    public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment) {
+    public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterest, int minimumTotalTimeUnitsForInvestment, int maximumOpenLoansForLoaner) {
 
         List<Loan> filteredLoans = new ArrayList<>();
         for (Loan loan : allTheLoans) {
             boolean isLoanNewOrPending = loan.isLoanNewOrPending();
             boolean theLoanIsInFilteredCategories = filteredCategories.contains(loan.getLoanCategory());
             boolean customerIsNotTheLoanOwner = !(loan.getNameOfCreatingCustomer().equals(customers.get(investingCustomerIndex).getCustomerName())); //need to make sure he cannot invest in himself
-            boolean theLoanHasEnoughInterest = loan.getInterestPerOneTimeUnit() >= minimumInterestForTimeUnit;
+            boolean theLoanHasEnoughInterest = loan.getInterestRateInEveryPayment() >= minimumInterest;
             boolean loanHasEnoughTimeUnits = loan.getTotalAmountOfTimeUnits() >= minimumTotalTimeUnitsForInvestment;
+            boolean loanHasNotExceededMaxOpenLoans =  customers.get(getCustomerIndexByName(loan.getNameOfCreatingCustomer())).getNumOfOpenLoans() <= maximumOpenLoansForLoaner;
 
-            if (minimumInterestForTimeUnit == -1) {
+            if (maximumOpenLoansForLoaner == -1) {
+                loanHasNotExceededMaxOpenLoans = true;
+            }
+            if (minimumInterest == -1) {
                 theLoanHasEnoughInterest = true;
             }
             if (minimumTotalTimeUnitsForInvestment == -1) {
@@ -338,12 +342,21 @@ public class Bank implements BankActions, Serializable {
             if (filteredCategories.size() == 0) {
                 theLoanIsInFilteredCategories = true;
             }
-            if (isLoanNewOrPending && theLoanIsInFilteredCategories && customerIsNotTheLoanOwner && theLoanHasEnoughInterest && loanHasEnoughTimeUnits) {
+            if (isLoanNewOrPending && theLoanIsInFilteredCategories && customerIsNotTheLoanOwner && theLoanHasEnoughInterest && loanHasEnoughTimeUnits && loanHasNotExceededMaxOpenLoans) {
                 filteredLoans.add(loan);
             }
         }
 
         return filteredLoans;
+    }
+
+    int getCustomerIndexByName(String customerName) {
+        for (int i = 0; i < customers.size(); i++) {
+            if (customers.get(i).getCustomerName().equals(customerName)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public List<String> getListOfCustomerNamesAndTheirCurrentBalance() {
@@ -448,7 +461,7 @@ public class Bank implements BankActions, Serializable {
         return customersInformation;
     }
 
-    //util function to get the loans that a customer invested in
+    //util function
     private String getLoansThatCustomerCreated(Customer customer) {
         String LoansCustomerCreated = "";
         Integer newStatus = 0;

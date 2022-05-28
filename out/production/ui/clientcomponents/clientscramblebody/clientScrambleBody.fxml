@@ -9,16 +9,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="clientcomponents.clientscramblebody.ClientScrambleBody">
-    <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="639.0" prefWidth="1254.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientcomponents.clientscramblebody.ClientScrambleBodyController">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="742.0" prefWidth="1271.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientcomponents.clientscramblebody.ClientScrambleBody">
         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="278.0" prefWidth="349.0">
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="673.0" prefWidth="1288.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="834.0" prefWidth="1460.0">
                     <children>
-                        <Button fx:id="scramble" layoutX="86.0" layoutY="110.0" mnemonicParsing="false" onAction="#SetSceneInformation" prefHeight="25.0" prefWidth="70.0" text="Scramble" />
-                        <Button fx:id="payment" layoutX="156.0" layoutY="110.0" mnemonicParsing="false" onAction="#SetScenePayment" text="Payment" />
-                        <Button fx:id="information" layoutX="8.0" layoutY="110.0" mnemonicParsing="false" onAction="#setSceneInformation" prefHeight="25.0" prefWidth="85.0" text="information" />
-                    </children></AnchorPane>
+
                 <Button fx:id="scrambleButton" layoutX="424.0" layoutY="97.0" mnemonicParsing="false" onAction="#scrambleButtonPressed" prefHeight="25.0" prefWidth="70.0" text="Scramble" />
                 <TextField fx:id="sumToInvestText" layoutX="1058.0" layoutY="22.0" />
                 <TextField fx:id="minimumInterestText" layoutX="1032.0" layoutY="123.0" prefHeight="25.0" prefWidth="194.0" />
@@ -51,7 +46,8 @@
                         <TableColumn fx:id="finished" prefWidth="115.0" text="finished data" />
                     </columns>
                 </TableView>
-            </children>
-        </AnchorPane>
-    </content>
+                    </children></AnchorPane>
+            </content>
+
+
 </ScrollPane>

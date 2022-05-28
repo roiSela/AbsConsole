@@ -55,7 +55,15 @@ public class Customer implements Serializable {
         }
     }
 
-
+    public int getNumOfOpenLoans(){
+        int numOfOpenLoans = 0;
+        for (Loan loan : loansCustomerCreated) {
+            if (loan.getStatus() == Loan.LoanStatus.ACTIVE || loan.getStatus() == Loan.LoanStatus.NEW || loan.getStatus() == Loan.LoanStatus.RISK|| loan.getStatus() == Loan.LoanStatus.PENDING) {
+                numOfOpenLoans++;
+            }
+        }
+        return numOfOpenLoans;
+    }
 
     public String getCustomerTransactionsString(){return account.accountTransactionsToString();}
     public String getCustomerName() {return name;}
@@ -65,6 +73,6 @@ public class Customer implements Serializable {
     public List<Loan> getLoansUnpaid() {return loansUnpaid;}
 
     public List<Message> getCustomerMessage() {return customerMessage;}
-
+    public double getCurrentBalance(){return account.getCurrentBalance();}
     public void setCustomerMessage(List<Message> customerMessage) {this.customerMessage = customerMessage;}
 }
