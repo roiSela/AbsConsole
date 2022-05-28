@@ -5,10 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Bank;
 import model.Customer;
@@ -115,7 +112,7 @@ public class ClientScrambleBody {
 
         @FXML
         void findLoansButtonPressed(ActionEvent event) {
-                String sumToInvest = sumToInvestText.getText();
+                String sumToInvestText = this.sumToInvestText.getText();
 
                 List<String> categories = new ArrayList<>();
                 ObservableList<String> selectedCategories = categoryCheckBox.getCheckModel().getCheckedItems();
@@ -123,19 +120,22 @@ public class ClientScrambleBody {
                         categories.add(category);
                 }
 
-                String minimumInterest = minimumInterestText.getText();
-                String minimumTotalYazForLoan = minimumYazForLoanText.getText();
-                String MaximumOpenLoans = openLoansText.getText();
-                String maximumOwnership = maximunOwenership.getText();
+                String minimumInterestText = this.minimumInterestText.getText();
+                String minimumTotalYazForLoanText = minimumYazForLoanText.getText();
+                String MaximumOpenLoansText = openLoansText.getText();
+                String maximumOwnershipText = maximunOwenership.getText();
 
-                boolean sumToInvestIsValid = checkSumToInvest(sumToInvest);
-                boolean minimumInterestIsValid = checkMinimalInterest(minimumInterest);
-                boolean minimumYazForLoanIsValid = checkMinimalYazForLoan(minimumTotalYazForLoan);
-                boolean openLoansIsValid = checkOpenLoans(MaximumOpenLoans);
-                boolean maximumOwnershipIsValid = checkMaximumOwnership(maximumOwnership);
+                boolean sumToInvestIsValid = checkSumToInvest(sumToInvestText);
+                boolean minimumInterestIsValid = checkMinimalInterest(minimumInterestText);
+                boolean minimumYazForLoanIsValid = checkMinimalYazForLoan(minimumTotalYazForLoanText);
+                boolean openLoansIsValid = checkOpenLoans(MaximumOpenLoansText);
+                boolean maximumOwnershipIsValid = checkMaximumOwnership(maximumOwnershipText);
 
                 if (sumToInvestIsValid && minimumInterestIsValid && minimumYazForLoanIsValid && openLoansIsValid && maximumOwnershipIsValid) {
                         
+                }else{
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error, the input is invalid");
                 }
 
         }
