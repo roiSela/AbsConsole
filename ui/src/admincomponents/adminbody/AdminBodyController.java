@@ -23,12 +23,6 @@ import java.util.Observable;
 public class AdminBodyController {
 
     @FXML
-    private Button increaseYazButton;
-
-    @FXML
-    private Button loadFileButton;
-
-    @FXML
     private TableView<LoanTableObj> loansTable;
 
     @FXML

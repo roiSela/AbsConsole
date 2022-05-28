@@ -38,6 +38,7 @@ public class HeaderController {
         else{
             mainController.getRoot().setCenter(mainController.getClientInformationComponent());
             mainController.setCurrentCustomer(businessLogic.getCustomerByName(userModeComboBox.getValue()));
+            mainController.getClientInformationComponentController().updateTables();
         }
 
     }

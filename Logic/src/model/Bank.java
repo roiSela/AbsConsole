@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.classesForTables.CustomerTableObj;
 import model.classesForTables.LoanTableObj;
+import model.classesForTables.TransactionTableObj;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -527,8 +528,12 @@ public class Bank implements BankActions, Serializable {
 
 
     public ObservableList<LoanTableObj> getLoansInformationForTable() {
+        return getLoans(allTheLoans);
+    }
+
+    public ObservableList<LoanTableObj> getLoans(List<Loan> loans) {
         ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
-        for (Loan loan : allTheLoans) {
+        for (Loan loan : loans) {
             String id = loan.getLoanName();
             String owner = loan.getNameOfCreatingCustomer();
             String category = loan.getLoanCategory();
@@ -560,6 +565,25 @@ public class Bank implements BankActions, Serializable {
         }
         return loansInformationForTable;
     }
+
+    public Loan getLoanById(String loadId){
+        for(Loan loan : allTheLoans){
+            if(loan.getLoanName() == loadId){
+                return loan;
+            }
+        }
+        return null;
+    }
+
+    public List<Loan> getLoansCustomerInvestedIn(List<String> idListOfLoansThatCustomerInvestedIn){
+        List<Loan> loansCustomerInvestedIn = new ArrayList<>();
+        for(String id : idListOfLoansThatCustomerInvestedIn){
+            loansCustomerInvestedIn.add(getLoanById(id));
+        }
+        return loansCustomerInvestedIn;
+    }
+
+
 
 
 }

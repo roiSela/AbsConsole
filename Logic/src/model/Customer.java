@@ -1,6 +1,10 @@
 package model;
 
 import generated.AbsCustomer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.classesForTables.LoanTableObj;
+import model.classesForTables.TransactionTableObj;
 
 import java.io.Serializable;
 import java.util.*;
@@ -50,6 +54,8 @@ public class Customer implements Serializable {
 
         }
     }
+
+
 
     public String getCustomerTransactionsString(){return account.accountTransactionsToString();}
     public String getCustomerName() {return name;}
