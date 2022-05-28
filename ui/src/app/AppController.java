@@ -23,12 +23,12 @@ public class AppController {
     @FXML private HeaderController headerComponentController;
     @FXML private ScrollPane bodyComponent;
     @FXML private AdminBodyController bodyComponentController;
-    private ScrollPane clientInformationComponent;
-    private ClientInformationBodyController clientInformationComponentController;
-    private ScrollPane clientPaymentComponent;
-    private ClientInformationBodyController clientPaymentComponentController;
-    private ScrollPane clientScrambleComponent;
-    private ClientInformationBodyController clientScrambleComponentController;
+     private ScrollPane clientInformationComponent;
+     private ClientInformationBodyController clientInformationComponentController;
+     private ScrollPane clientPaymentComponent;
+     private ClientInformationBodyController clientPaymentComponentController;
+     private ScrollPane clientScrambleComponent;
+     private ClientInformationBodyController clientScrambleComponentController;
 
     private BorderPane root;
     private Stage primaryStage;
@@ -41,6 +41,7 @@ public class AppController {
         fxmlLoader.setLocation(url);
         this.clientInformationComponent = fxmlLoader.load(url.openStream());
         this.clientInformationComponentController = fxmlLoader.getController();
+        this.clientInformationComponentController.setMainController(this);
     }
 
     public void setBusinessLogic(Bank businessLogic) {
@@ -79,6 +80,16 @@ public class AppController {
         return clientInformationComponent;
     }
 
+    public ClientInformationBodyController getClientInformationComponentController() {return clientInformationComponentController;}
+
+    public Bank getBusinessLogic() {return businessLogic;}
+
+    public Customer getCurrentCustomer() {return currentCustomer;}
+
+    public ScrollPane getClientScrambleComponent() {return clientScrambleComponent;}
+
+    public ScrollPane getClientPaymentComponent() {return clientPaymentComponent;}
+
     public void setRoot(BorderPane root) {
         this.root = root;
     }
@@ -86,4 +97,5 @@ public class AppController {
     public void setCurrentCustomer(Customer customer) {
         this.currentCustomer = customer;
     }
+
 }
