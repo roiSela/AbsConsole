@@ -2,6 +2,7 @@ package app;
 
 import admincomponents.adminbody.AdminBodyController;
 import clientcomponents.clientinformationbody.ClientInformationBodyController;
+import clientcomponents.clientscramblebody.ClientScrambleBody;
 import com.sun.security.ntlm.Client;
 import header.HeaderController;
 import javafx.collections.ObservableList;
@@ -27,8 +28,11 @@ public class AppController {
      private ClientInformationBodyController clientInformationComponentController;
      private ScrollPane clientPaymentComponent;
      private ClientInformationBodyController clientPaymentComponentController;
+/*     private ScrollPane clientScrambleComponent;
+     private ClientInformationBodyController clientScrambleComponentController;*/
+
      private ScrollPane clientScrambleComponent;
-     private ClientInformationBodyController clientScrambleComponentController;
+     private ClientScrambleBody clientScrambleComponentController;
 
     private BorderPane root;
     private Stage primaryStage;
@@ -42,6 +46,22 @@ public class AppController {
         this.clientInformationComponent = fxmlLoader.load(url.openStream());
         this.clientInformationComponentController = fxmlLoader.getController();
         this.clientInformationComponentController.setMainController(this);
+
+        //why does this not work?
+       /* FXMLLoader fxmlLoader2 = new FXMLLoader();
+        URL url2 = getClass().getResource("../clientcomponents/clientScrambleBody/ClientScrambleBody.fxml");
+        fxmlLoader.setLocation(url2);
+        this.clientScrambleComponent = fxmlLoader2.load(url2.openStream());
+        this.clientScrambleComponentController = fxmlLoader2.getController();
+        this.clientScrambleComponentController.setMainController(this);*/
+
+        /*FXMLLoader fxmlLoader2 = new FXMLLoader();
+        URL url2 = getClass().getResource("../clientcomponents/clientPaymentBody/ClientPaymentBody.fxml");
+        fxmlLoader2.setLocation(url2);
+        this.clientPaymentComponent = fxmlLoader2.load(url2.openStream());
+        this.clientPaymentComponentController = fxmlLoader2.getController();
+        this.clientPaymentComponentController.setMainController(this);*/
+
     }
 
     public void setBusinessLogic(Bank businessLogic) {
