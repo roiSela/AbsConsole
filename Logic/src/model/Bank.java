@@ -350,7 +350,7 @@ public class Bank implements BankActions, Serializable {
         return filteredLoans;
     }
 
-    int getCustomerIndexByName(String customerName) {
+    public int getCustomerIndexByName(String customerName) {
         for (int i = 0; i < customers.size(); i++) {
             if (customers.get(i).getCustomerName().equals(customerName)) {
                 return i;
@@ -595,6 +595,46 @@ public class Bank implements BankActions, Serializable {
         }
         return loansCustomerInvestedIn;
     }
+
+
+    //this function is used for the scramble screen, in order to display the filtered loans on the table
+    public ObservableList<LoanTableObj> getLoansInformationForTableFiltered(List<Loan> filteredLoans) {
+        ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
+        for (Loan loan : filteredLoans) {
+            String id = loan.getLoanName();
+            String owner = loan.getNameOfCreatingCustomer();
+            String category = loan.getLoanCategory();
+            String amount = loan.getLoanAmount() + "";
+            String time = loan.getTotalAmountOfTimeUnits() + "";
+            String interest = loan.getInterestRateInEveryPayment() + "";
+            String rate = loan.getPaymentRatePerTimeUnits() + "";
+            String status = loan.getStatus().toString();
+            String pending = "";
+            String active = "";
+            String risk = "";
+            String finished = "";
+            switch (loan.getStatus()) {
+                case PENDING:
+                    pending = loan.pendingData();
+                    break;
+                case ACTIVE:
+                    active = loan.activeData();
+                    break;
+                case RISK:
+                    risk = loan.riskData();
+                    break;
+                case FINISHED:
+                    finished = loan.finishedData();
+                    break;
+            }
+            LoanTableObj obj = new LoanTableObj(id, owner, category, amount, time, interest, rate, status, pending, active, risk, finished);
+            loansInformationForTable.add(obj);
+        }
+        return loansInformationForTable;
+
+    }
+
+
 
 
 
