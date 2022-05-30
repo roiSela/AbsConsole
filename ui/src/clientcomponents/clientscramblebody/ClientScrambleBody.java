@@ -131,25 +131,34 @@ public class ClientScrambleBody {
 
         if (sumToInvestIsValid && minimumInterestIsValid && minimumYazForLoanIsValid && openLoansIsValid && maximumOwnershipIsValid) {
             int customerIndex = businessLogic.getCustomerIndexByName(currentCustomer.getCustomerName());
-            double sumToInvest = Double.parseDouble(sumToInvestText);
+            double sumToInvest = -1;
+            if (!sumToInvestText.isEmpty()){
+                sumToInvest = Double.parseDouble(sumToInvestText);
+            }
             categories =  categories;//categories are fine
-            double minimumInterest = Double.parseDouble(minimumInterestText);
-            int minimumTotalYazForLoan = Integer.parseInt(minimumTotalYazForLoanText);
-            int MaximumOpenLoans = Integer.parseInt(MaximumOpenLoansText);
+            double minimumInterest = -1;
+            if (!minimumInterestText.isEmpty()){
+                minimumInterest = Double.parseDouble(minimumInterestText);
+            }
+            int minimumTotalYazForLoan = -1;
+            if (!minimumTotalYazForLoanText.isEmpty()){
+                minimumTotalYazForLoan = Integer.parseInt(minimumTotalYazForLoanText);
+            }
+            int MaximumOpenLoans = -1;
+            if (!MaximumOpenLoansText.isEmpty()){
+                MaximumOpenLoans = Integer.parseInt(openLoansText.getText());
+            }
             List<Loan> filteredLoans = businessLogic.getFilteredLoans(customerIndex, sumToInvest, categories, minimumInterest, minimumTotalYazForLoan, MaximumOpenLoans);
             updateLoansInformationForTable(filteredLoans);
+            findLoansButton.setText("Find Loans to invest in");
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error, the input is invalid");
+            findLoansButton.setText("Invalid Input, please try again");
         }
 
     }
 
     private boolean checkSumToInvest(String sumToInvest) {
-        if (sumToInvest.isEmpty()) {
-            return true;
-        }
         if (isStringDouble(sumToInvest) && Double.parseDouble(sumToInvest) > 0 && Double.parseDouble(sumToInvest) <= currentCustomer.getCurrentBalance()) {
             return true;
         } else {
@@ -205,7 +214,25 @@ public class ClientScrambleBody {
 
     @FXML
     void scrambleButtonPressed(ActionEvent event) {
+        int customerIndex = businessLogic.getCustomerIndexByName(currentCustomer.getCustomerName());
+        int moneyToInvest = Integer.parseInt(sumToInvestText.getText());
+        String maximumOwnershipText = maximunOwenership.getText();//we already know it's valid from the get loans button
+        int maxPercentage;
+        if (maximumOwnershipText.isEmpty()) {
+            maxPercentage = -1;
+        }else{
+            maxPercentage = Integer.parseInt(maximumOwnershipText);
+        }
 
+        Set<String> loanNamesChosen = new HashSet<String>();
+        ObservableList<String> selectedLoans = loansChosen.getCheckModel().getCheckedItems();
+        for (String loanName : selectedLoans) {
+            loanNamesChosen.add(loanName);
+        }
+
+        List<Loan> loansToInvestIn = businessLogic.getLoansByNames(loanNamesChosen);
+
+        businessLogic.schedulingLoansToCustomer(customerIndex, moneyToInvest, loansToInvestIn, maxPercentage);
     }
 
     public void updateLoansInformationForTable( List<Loan> filteredLoans ) {
@@ -214,25 +241,20 @@ public class ClientScrambleBody {
         }
         loansInformation = businessLogic.getLoansInformationForTableFiltered(filteredLoans);
         loansTable.setItems(loansInformation);
+        //add names of loans in loansInformation to comboBox
+        loansChosen.getItems().clear();
+        for (LoanTableObj loan : loansInformation) {
+            loansChosen.getItems().add(loan.getId());
+        }
     }
 
-    void addCategoriesToCheckBox(List<String> categories) {
+    public void addCategoriesToCheckBox(List<String> categories) {
+        categoryCheckBox.getItems().clear();
         ObservableList<String> categoriesList = FXCollections.observableArrayList();
         for (String category : categories) {
             categoriesList.add(category);
         }
         categoryCheckBox.getItems().addAll(categoriesList);
-    }
-
-
-    private static int chooseMaximalLoanTime(Bank bank, Scanner input) {
-        System.out.println("If you wish, choose a maximal loan time for loan you are willing to invest in (press enter if you are not interested in this filter):");
-        String maximalLoanTime = input.nextLine();
-        int maximalLoanTimeInt = -1; //if the user does not choose a maximal loan time, we set it to -1, that means that we will match all the loans loan times
-        if (isStringInteger(maximalLoanTime)) {
-            maximalLoanTimeInt = Integer.parseInt(maximalLoanTime);
-        }
-        return maximalLoanTimeInt;
     }
 
     private static boolean isStringDouble(String input) {

@@ -9,8 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.Bank;
 
-import java.util.List;
-
 public class HeaderController {
 
     @FXML
@@ -33,12 +31,13 @@ public class HeaderController {
     void changeUserMode(ActionEvent event) {
         if(userModeComboBox.getValue() == "Admin"){
             mainController.getRoot().setCenter(mainController.getBodyComponent());
-
+            mainController.tellAdminBodyToUpdate();
         }
         else{
             mainController.getRoot().setCenter(mainController.getClientInformationComponent());
             mainController.setCurrentCustomer(businessLogic.getCustomerByName(userModeComboBox.getValue()));
             mainController.getClientInformationComponentController().updateTables();
+            mainController.updateCustomerScrambleCategoriesListForCheckBox();
         }
 
     }

@@ -174,7 +174,7 @@ public class ClientInformationBodyController {
     }
 
     public void setBodyToPayment(){
-        mainController.getRoot().setCenter(mainController.getClientScrambleComponent());
+        mainController.getRoot().setCenter(mainController.getClientPaymentComponent());
     }
 
     public void setMainController(AppController mainController) {this.mainController = mainController;}
