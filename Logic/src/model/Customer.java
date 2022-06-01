@@ -4,6 +4,7 @@ import generated.AbsCustomer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.classesForTables.LoanTableObj;
+import model.classesForTables.MessagesTableObj;
 import model.classesForTables.TransactionTableObj;
 
 import java.io.Serializable;
@@ -14,14 +15,16 @@ public class Customer implements Serializable {
     private Account account;
     private List<String> idListOfLoansThatCustomerInvestedIn; //all the loads that we invested in
     private List<Loan> loansCustomerCreated;
-    private List<Loan> loansUnpaid = null; ///list to save unpaid loans
-    private List<Message> customerMessage = null; ///Message about loans paymaent
+    private List<Loan> loansUnpaid ; ///list to save unpaid loans
+    private List<Message> customerMessage; ///Message about loans paymaent
 
     public Customer(AbsCustomer copyFrom) {
         name = copyFrom.getName();
         account = new Account(copyFrom.getAbsBalance());
         idListOfLoansThatCustomerInvestedIn = new ArrayList<>();
         loansCustomerCreated = new ArrayList<>();
+        customerMessage = new ArrayList<>();
+        loansUnpaid = new ArrayList<>();
     }
 
     public void addCreatedLoan(Loan loan) {
@@ -53,6 +56,19 @@ public class Customer implements Serializable {
             bank.payInvestment(paymentAmmount, investedCustomer);
 
         }
+    }
+
+    public ObservableList<MessagesTableObj> getMessagesForTable() {
+        ObservableList<MessagesTableObj> MessagesForTable = FXCollections.observableArrayList();
+        for (Message message : customerMessage) {
+            //String time = String.valueOf(transaction.getTransactionTime());
+            String loanName = message.getLoanName();
+            String time = String.valueOf(message.getPaymentTime());
+            String paymentAmount = String.valueOf(message.getPaymentAmount());
+            MessagesTableObj obj = new MessagesTableObj(loanName, time, paymentAmount);
+            MessagesForTable.add(obj);
+        }
+        return MessagesForTable;
     }
 
 

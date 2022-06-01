@@ -94,8 +94,8 @@
                   </TableView>
                   <HBox layoutX="-4.0" layoutY="363.0" prefHeight="101.0" prefWidth="350.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Button" />
-                        <Button alignment="CENTER_RIGHT" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="charge" mnemonicParsing="false" onAction="#ChargeMoney" text="Сharge" />
+                        <Button fx:id="withdraw" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#withdrawMoney" text="Withdraw " />
                      </children>
                   </HBox>
                </children>

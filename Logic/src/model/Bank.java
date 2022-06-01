@@ -382,7 +382,6 @@ public class Bank implements BankActions, Serializable {
     }
 
     public void payForLoans(Customer customer){
-        customer.setCustomerMessage(null);
         List<Loan> customerUnpaidLoans = customer.getLoansUnpaid();
         for(Loan loan : customerUnpaidLoans){
             loan.setLoanStatus(Loan.LoanStatus.RISK);
@@ -583,7 +582,13 @@ public class Bank implements BankActions, Serializable {
         return loansCustomerInvestedIn;
     }
 
+    public int getCustomerIndex(Customer customer){
+        return customers.indexOf(customer);
+    }
 
+    public List<Loan> getAllTheLoans() {
+        return allTheLoans;
+    }
 
 
 }
