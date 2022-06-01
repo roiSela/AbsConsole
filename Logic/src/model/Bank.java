@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.classesForTables.CustomerTableObj;
 import model.classesForTables.LoanTableObj;
-import model.classesForTables.TransactionTableObj;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -125,6 +124,56 @@ public class Bank implements BankActions, Serializable {
 
     }
 
+    //this function is used for the scramble screen, in order to display the filtered loans on the table
+    public ObservableList<LoanTableObj> getLoansInformationForTableFiltered(List<Loan> filteredLoans) {
+        ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
+        for (Loan loan : filteredLoans) {
+            String id = loan.getLoanName();
+            String owner = loan.getNameOfCreatingCustomer();
+            String category = loan.getLoanCategory();
+            String amount = loan.getLoanAmount() + "";
+            String time = loan.getTotalAmountOfTimeUnits() + "";
+            String interest = loan.getInterestRateInEveryPayment() + "";
+            String rate = loan.getPaymentRatePerTimeUnits() + "";
+            String status = loan.getStatus().toString();
+            String pending = "";
+            String active = "";
+            String risk = "";
+            String finished = "";
+            switch (loan.getStatus()) {
+                case PENDING:
+                    pending = loan.pendingData();
+                    break;
+                case ACTIVE:
+                    active = loan.activeData();
+                    break;
+                case RISK:
+                    risk = loan.riskData();
+                    break;
+                case FINISHED:
+                    finished = loan.finishedData();
+                    break;
+            }
+            LoanTableObj obj = new LoanTableObj(id, owner, category, amount, time, interest, rate, status, pending, active, risk, finished);
+            loansInformationForTable.add(obj);
+        }
+        return loansInformationForTable;
+
+    }
+
+
+    public List<Loan> getLoansByNames(Set<String> loanNamesChosen) {
+        List<Loan> loansByNames = new ArrayList<>();
+        for (String loanName : loanNamesChosen) {
+            for (Loan loan : allTheLoans) {
+                if (loan.getLoanName().equals(loanName)) {
+                    loansByNames.add(loan);
+                }
+            }
+        }
+        return loansByNames;
+    }
+
     private void LoadLists(List<AbsCustomer> absCustomers, List<AbsLoan> absLoans, List<String> absLoanCategories) {
         loanCategories = absLoanCategories;
         for (AbsCustomer cust : absCustomers) {
@@ -212,76 +261,165 @@ public class Bank implements BankActions, Serializable {
 
 
     @Override//section 6
-    public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling) {
-        loansForScheduling = createDeepCopyLoansList(loansForScheduling); //if we don't create a deep copy, the payments will be preformed twice.
-        double moneyToInvestCopy = moneyToInvest;
-        List<Double> howMuchToInvestInEachLoan = new ArrayList<>();
-        List<String> loansForSchedulingNames = new ArrayList<>(); //when we will iterate over the original loans list we will need this
-        for (Loan loan : loansForScheduling) {
-            loansForSchedulingNames.add(loan.getLoanName());
-        }
+    public boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling, int maxPercentageOfOwnership) {
 
-        //init how much to invest in each loan
-        for (int i = 0; i < loansForScheduling.size(); i++) {
-            howMuchToInvestInEachLoan.add((double) 0);
-        }
+        if (maxPercentageOfOwnership == -1)
+        {
+            loansForScheduling = createDeepCopyLoansList(loansForScheduling); //if we don't create a deep copy, the payments will be preformed twice.
+            double moneyToInvestCopy = moneyToInvest;
+            List<Double> howMuchToInvestInEachLoan = new ArrayList<>();
+            List<String> loansForSchedulingNames = new ArrayList<>(); //when we will iterate over the original loans list we will need this
+            for (Loan loan : loansForScheduling) {
+                loansForSchedulingNames.add(loan.getLoanName());
+            }
 
-        //calculate how much to invest in each loan
-        boolean doneDividingMoneyToInvest = false;
-        while (!doneDividingMoneyToInvest) {
-            double minInvest = findMinMoneyLeftToInvest(loansForScheduling); //find minimum money left to invest in all loans
-            if (getNumberOfnewOrPendingLoans(loansForScheduling) == 0) { //no more loans left to invest in. (all are ACTIVE now.)
-                doneDividingMoneyToInvest = true;
-                break;
+            //init how much to invest in each loan
+            for (int i = 0; i < loansForScheduling.size(); i++) {
+                howMuchToInvestInEachLoan.add((double) 0);
             }
-            if (moneyToInvest == 0) { //if the investment money ran out
-                doneDividingMoneyToInvest = true;
-                break;
-            }
-            if (moneyToInvest >= minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)) { //we will add min invest to all the pending or new loans
-                for (int i = 0; i < loansForScheduling.size(); i++) {
-                    if (loansForScheduling.get(i).isLoanNewOrPending()) {
-                        howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + minInvest);
-                        loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), minInvest);
-                        moneyToInvest -= minInvest;
-                    }
+
+            //calculate how much to invest in each loan
+            boolean doneDividingMoneyToInvest = false;
+            while (!doneDividingMoneyToInvest) {
+                double minInvest = findMinMoneyLeftToInvest(loansForScheduling); //find minimum money left to invest in all loans
+                if (getNumberOfnewOrPendingLoans(loansForScheduling) == 0) { //no more loans left to invest in. (all are ACTIVE now.)
+                    doneDividingMoneyToInvest = true;
+                    break;
                 }
-            } else {// moneyToInvest < minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)
-                double moneyToInvestInEachNewOrPendingLoan = moneyToInvest / getNumberOfnewOrPendingLoans(loansForScheduling);
-                for (int i = 0; i < loansForScheduling.size(); i++) {
-                    if (loansForScheduling.get(i).isLoanNewOrPending()) {
-                        howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + moneyToInvestInEachNewOrPendingLoan);
-                        loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), moneyToInvestInEachNewOrPendingLoan);
-                        moneyToInvest -= moneyToInvestInEachNewOrPendingLoan;
-                    }
+                if (moneyToInvest == 0) { //if the investment money ran out
+                    doneDividingMoneyToInvest = true;
+                    break;
                 }
-                doneDividingMoneyToInvest = true;
-                break;
-            }
-
-        }
-
-//now we need to implement the changes to the actual loan list, and to update the customer's account:
-        int counter = 0;
-        for (Loan loan : allTheLoans) {
-            if (loansForSchedulingNames.contains(loan.getLoanName())) {
-                loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
-                customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter), getCurrentTime());
-                customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
-                if (loan.isLoanActive()) { //if the loan became active, we need to transfer the loan amount to the loan owner
-                    String loanOwner = loan.getNameOfCreatingCustomer();
-                    //find the customer who created the loan
-                    for (int i = 0; i < customers.size(); i++) {
-                        if (customers.get(i).getCustomerName().equals(loanOwner)) {
-                            customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(), getCurrentTime());
-                            break;
+                if (moneyToInvest >= minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)) { //we will add min invest to all the pending or new loans
+                    for (int i = 0; i < loansForScheduling.size(); i++) {
+                        if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                            howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + minInvest);
+                            loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), minInvest);
+                            moneyToInvest -= minInvest;
                         }
                     }
+                } else {// moneyToInvest < minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)
+                    double moneyToInvestInEachNewOrPendingLoan = moneyToInvest / getNumberOfnewOrPendingLoans(loansForScheduling);
+                    for (int i = 0; i < loansForScheduling.size(); i++) {
+                        if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                            howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + moneyToInvestInEachNewOrPendingLoan);
+                            loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), moneyToInvestInEachNewOrPendingLoan);
+                            moneyToInvest -= moneyToInvestInEachNewOrPendingLoan;
+                        }
+                    }
+                    doneDividingMoneyToInvest = true;
+                    break;
                 }
-                counter++;
+
+            }
+
+//now we need to implement the changes to the actual loan list, and to update the customer's account:
+            int counter = 0;
+            for (Loan loan : allTheLoans) {
+                if (loansForSchedulingNames.contains(loan.getLoanName())) {
+                    loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
+                    customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter), getCurrentTime());
+                    customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
+                    if (loan.isLoanActive()) { //if the loan became active, we need to transfer the loan amount to the loan owner
+                        String loanOwner = loan.getNameOfCreatingCustomer();
+                        //find the customer who created the loan
+                        for (int i = 0; i < customers.size(); i++) {
+                            if (customers.get(i).getCustomerName().equals(loanOwner)) {
+                                customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(), getCurrentTime());
+                                break;
+                            }
+                        }
+                    }
+                    counter++;
+                }
+            }
+            return true;
+        }else{ //the customer wants a limit on the percentage of his money he can invest in each loan
+            //idea: we will just make sure that the   howMuchToInvestInEachLoan array is not bigger than the max percentage of ownership (we will check that for each of the loans)
+            //if it does, we will withrow the investment.
+
+            loansForScheduling = createDeepCopyLoansList(loansForScheduling); //if we don't create a deep copy, the payments will be preformed twice.
+            double moneyToInvestCopy = moneyToInvest;
+            List<Double> howMuchToInvestInEachLoan = new ArrayList<>();
+            List<String> loansForSchedulingNames = new ArrayList<>(); //when we will iterate over the original loans list we will need this
+            for (Loan loan : loansForScheduling) {
+                loansForSchedulingNames.add(loan.getLoanName());
+            }
+
+            //init how much to invest in each loan
+            for (int i = 0; i < loansForScheduling.size(); i++) {
+                howMuchToInvestInEachLoan.add((double) 0);
+            }
+
+            //calculate how much to invest in each loan
+            boolean doneDividingMoneyToInvest = false;
+            while (!doneDividingMoneyToInvest) {
+                double minInvest = findMinMoneyLeftToInvest(loansForScheduling); //find minimum money left to invest in all loans
+                if (getNumberOfnewOrPendingLoans(loansForScheduling) == 0) { //no more loans left to invest in. (all are ACTIVE now.)
+                    doneDividingMoneyToInvest = true;
+                    break;
+                }
+                if (moneyToInvest == 0) { //if the investment money ran out
+                    doneDividingMoneyToInvest = true;
+                    break;
+                }
+                if (moneyToInvest >= minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)) { //we will add min invest to all the pending or new loans
+                    for (int i = 0; i < loansForScheduling.size(); i++) {
+                        if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                            howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + minInvest);
+                            loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), minInvest);
+                            moneyToInvest -= minInvest;
+                        }
+                    }
+                } else {// moneyToInvest < minInvest * getNumberOfnewOrPendingLoans(loansForScheduling)
+                    double moneyToInvestInEachNewOrPendingLoan = moneyToInvest / getNumberOfnewOrPendingLoans(loansForScheduling);
+                    for (int i = 0; i < loansForScheduling.size(); i++) {
+                        if (loansForScheduling.get(i).isLoanNewOrPending()) {
+                            howMuchToInvestInEachLoan.set(i, howMuchToInvestInEachLoan.get(i) + moneyToInvestInEachNewOrPendingLoan);
+                            loansForScheduling.get(i).invest(customers.get(customerIndex).getCustomerName(), moneyToInvestInEachNewOrPendingLoan);
+                            moneyToInvest -= moneyToInvestInEachNewOrPendingLoan;
+                        }
+                    }
+                    doneDividingMoneyToInvest = true;
+                    break;
+                }
+
+            }
+
+
+            makingSureThatInvestmentIsNotExceedingMaxPercentage(loansForScheduling,howMuchToInvestInEachLoan, maxPercentageOfOwnership);
+
+//now we need to implement the changes to the actual loan list, and to update the customer's account:
+            int counter = 0;
+            for (Loan loan : allTheLoans) {
+                if (loansForSchedulingNames.contains(loan.getLoanName())) {
+                    loan.invest(customers.get(customerIndex).getCustomerName(), howMuchToInvestInEachLoan.get(counter));
+                    customers.get(customerIndex).getCustomerAccount().takeMoneyFromAccount(howMuchToInvestInEachLoan.get(counter), getCurrentTime());
+                    customers.get(customerIndex).addInvestedLoan(loan.getLoanName());
+                    if (loan.isLoanActive()) { //if the loan became active, we need to transfer the loan amount to the loan owner
+                        String loanOwner = loan.getNameOfCreatingCustomer();
+                        //find the customer who created the loan
+                        for (int i = 0; i < customers.size(); i++) {
+                            if (customers.get(i).getCustomerName().equals(loanOwner)) {
+                                customers.get(i).getCustomerAccount().putMoneyInAccount(loan.getLoanAmount(), getCurrentTime());
+                                break;
+                            }
+                        }
+                    }
+                    counter++;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    private void makingSureThatInvestmentIsNotExceedingMaxPercentage(List<Loan> loansForScheduling, List<Double> howMuchToInvestInEachLoan, int maxPercentageOfOwnership) {
+        for (int i = 0; i < loansForScheduling.size(); i++) {
+            if (howMuchToInvestInEachLoan.get(i) > loansForScheduling.get(i).getLoanAmount() * maxPercentageOfOwnership / 100) {
+                howMuchToInvestInEachLoan.set(i, loansForScheduling.get(i).getLoanAmount() * maxPercentageOfOwnership / 100);
             }
         }
-        return true;
     }
 
     //creat deep copy of loan list
@@ -356,6 +494,45 @@ public class Bank implements BankActions, Serializable {
             customerIndexCounter++;
         }
         return customerData;
+    }
+    //utility function for section 6 (we use -1 to indicate that the user did not use the limitations)
+    public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterest, int minimumTotalTimeUnitsForInvestment, int maximumOpenLoansForLoaner) {
+
+        List<Loan> filteredLoans = new ArrayList<>();
+        for (Loan loan : allTheLoans) {
+            boolean isLoanNewOrPending = loan.isLoanNewOrPending();
+            boolean theLoanIsInFilteredCategories = filteredCategories.contains(loan.getLoanCategory());
+            boolean customerIsNotTheLoanOwner = !(loan.getNameOfCreatingCustomer().equals(customers.get(investingCustomerIndex).getCustomerName())); //need to make sure he cannot invest in himself
+            boolean theLoanHasEnoughInterest = loan.getInterestRateInEveryPayment() >= minimumInterest;
+            boolean loanHasEnoughTimeUnits = loan.getTotalAmountOfTimeUnits() >= minimumTotalTimeUnitsForInvestment;
+            boolean loanHasNotExceededMaxOpenLoans =  customers.get(getCustomerIndexByName(loan.getNameOfCreatingCustomer())).getNumOfOpenLoans() <= maximumOpenLoansForLoaner;
+
+            if (maximumOpenLoansForLoaner == -1) {
+                loanHasNotExceededMaxOpenLoans = true;
+            }
+            if (minimumInterest == -1) {
+                theLoanHasEnoughInterest = true;
+            }
+            if (minimumTotalTimeUnitsForInvestment == -1) {
+                loanHasEnoughTimeUnits = true;
+            }
+            if (filteredCategories.size() == 0) {
+                theLoanIsInFilteredCategories = true;
+            }
+            if (isLoanNewOrPending && theLoanIsInFilteredCategories && customerIsNotTheLoanOwner && theLoanHasEnoughInterest && loanHasEnoughTimeUnits && loanHasNotExceededMaxOpenLoans) {
+                filteredLoans.add(loan);
+            }
+        }
+
+        return filteredLoans;
+    }
+    public int getCustomerIndexByName(String customerName) {
+        for (int i = 0; i < customers.size(); i++) {
+            if (customers.get(i).getCustomerName().equals(customerName)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public double getCustomerBalance(int customerIndex) {

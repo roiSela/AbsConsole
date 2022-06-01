@@ -51,6 +51,13 @@ public class AppController {
         this.clientPaymentComponentController= fxmlLoader.getController();
         this.clientPaymentComponentController.setMainController(this);
 
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource("../clientcomponents/clientscramblebody/clientScrambleBody.fxml");
+        fxmlLoader.setLocation(url);
+        this.clientScrambleComponent = fxmlLoader.load(url.openStream());
+        this.clientScrambleComponentController= fxmlLoader.getController();
+        this.clientScrambleComponentController.setMainController(this);
+
 
 
     }

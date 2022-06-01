@@ -71,6 +71,18 @@ public class Customer implements Serializable {
         return MessagesForTable;
     }
 
+    public int getNumOfOpenLoans(){
+        int numOfOpenLoans = 0;
+        for (Loan loan : loansCustomerCreated) {
+            if (loan.getStatus() == Loan.LoanStatus.ACTIVE || loan.getStatus() == Loan.LoanStatus.NEW || loan.getStatus() == Loan.LoanStatus.RISK|| loan.getStatus() == Loan.LoanStatus.PENDING) {
+                numOfOpenLoans++;
+            }
+        }
+        return numOfOpenLoans;
+    }
+
+    public double getCurrentBalance(){return account.getCurrentBalance();}
+
 
 
     public String getCustomerTransactionsString(){return account.accountTransactionsToString();}

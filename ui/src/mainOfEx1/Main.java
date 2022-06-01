@@ -135,7 +135,7 @@ Main {
             System.out.println("There are no loans to invest in.");
         }else {
             List<Loan> matchedLoansChosen = chooseMatchedLoans(bank, input, matchedLoans);
-            bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen);
+           // bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen);
         }
         return bank;
     }

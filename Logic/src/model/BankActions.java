@@ -37,8 +37,11 @@ public interface BankActions {
      it gets client to place loans to, money to invest.
      (and it can also get other conditions for loan)
      */
-    boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansToScheduling);
 
+
+
+    //section 6
+    boolean schedulingLoansToCustomer(int customerIndex, double moneyToInvest, List<Loan> loansForScheduling, int maxPercentageOfOwnership);
 
     /**
      raising the time line by one. (starting from)
