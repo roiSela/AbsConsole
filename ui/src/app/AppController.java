@@ -45,21 +45,13 @@ public class AppController {
         this.clientInformationComponentController = fxmlLoader.getController();
         this.clientInformationComponentController.setMainController(this);
 
-        //why does this not work?
+
         FXMLLoader fxmlLoader2 = new FXMLLoader();
         URL url2 = getClass().getResource("../clientcomponents/clientScrambleBody/ClientScrambleBody.fxml");
         fxmlLoader2.setLocation(url2);
         this.clientScrambleComponent = fxmlLoader2.load(url2.openStream());
        this.clientScrambleComponentController = fxmlLoader2.getController();
       this.clientScrambleComponentController.setMainController(this);
-    //getRoot().setCenter(clientScrambleComponent);
-
-       /* FXMLLoader fxmlLoader3 = new FXMLLoader();
-        URL url3 = getClass().getResource("../clientcomponents/clientPaymentBody/ClientPaymentBody.fxml");
-        fxmlLoader3.setLocation(url3);
-        this.clientPaymentComponent = fxmlLoader3.load(url3.openStream());
-        this.clientPaymentComponentController = fxmlLoader3.getController();
-        this.clientPaymentComponentController.setMainController(this);*/
 
     }
 
