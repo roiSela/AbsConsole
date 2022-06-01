@@ -143,10 +143,10 @@ public class ClientInformationBodyController {
         lender_finished.setCellValueFactory(new PropertyValueFactory<LoanTableObj, String>("finished"));
 
         time.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("time"));
-        sum.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("time"));
-        type.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("time"));
-        balanceBefore.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("time"));
-        balanceAfter.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("time"));
+        sum.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("sum"));
+        type.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("type"));
+        balanceBefore.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("balanceBefore"));
+        balanceAfter.setCellValueFactory(new PropertyValueFactory<TransactionTableObj, String>("balanceAfter"));
 
     }
 
