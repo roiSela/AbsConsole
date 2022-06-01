@@ -1,12 +1,9 @@
 package admincomponents.adminbody;
 
 import app.AppController;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -17,8 +14,6 @@ import model.classesForTables.CustomerTableObj;
 import model.classesForTables.LoanTableObj;
 
 import java.io.File;
-import java.util.List;
-import java.util.Observable;
 
 public class AdminBodyController {
 
@@ -173,4 +168,8 @@ public class AdminBodyController {
 
     }
 
+    public void updateAdminTables() {
+        updateCustomerInformationForTable();//update the customer table in the admin view
+        updateLoansInformationForTable(); // update loans table in the admin view
+    }
 }
