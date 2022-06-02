@@ -236,61 +236,36 @@ public class ClientScrambleBody {
 
                 List<Loan> loansToInvestIn = businessLogic.getLoansByNames(loanNamesChosen);
 
-
                 Task<Integer> task = new Task<Integer>() {
                         @Override protected Integer call() throws Exception {
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                scrambleButton.setText("Scrambling...");
-                                        }
-                                });
-
-                                TimeUnit.SECONDS.sleep(1);
-
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                Platform.runLater(() -> {
                                                 scrambleButton.setText("3");
-                                        }
                                 });
 
 
                                 TimeUnit.SECONDS.sleep(1);
 
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                Platform.runLater(() -> {
                                                 scrambleButton.setText("2");
-                                        }
                                 });
 
                                 TimeUnit.SECONDS.sleep(1);
 
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                Platform.runLater(() -> {
                                                 scrambleButton.setText("1");
-                                        }
                                 });
 
                                 TimeUnit.SECONDS.sleep(1);
 
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                Platform.runLater(() ->  {
                                                 scrambleButton.setText("Done");
-                                        }
                                 });
 
 
                                 TimeUnit.SECONDS.sleep(1);
 
-                                Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                Platform.runLater(() ->  {
                                                 scrambleButton.setText("Scramble");
-                                        }
                                 });
                                 TimeUnit.SECONDS.sleep(1);
                                 businessLogic.schedulingLoansToCustomer(customerIndex, moneyToInvest, loansToInvestIn, maxPercentage);
@@ -298,7 +273,8 @@ public class ClientScrambleBody {
                         }
                 };
                 //using platform runlater to update the gui
-                Platform.runLater(task);
+               new Thread(task).start();
+
         }
 
         public void updateLoansInformationForTable( List<Loan> filteredLoans ) {
