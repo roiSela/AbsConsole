@@ -2,6 +2,7 @@ package app;
 
 import admincomponents.adminbody.AdminBodyController;
 import clientcomponents.clientinformationbody.ClientInformationBodyController;
+import clientcomponents.clientpaymenybody.СlientPaymentBodyController;
 import clientcomponents.clientscramblebody.ClientScrambleBody;
 import header.HeaderController;
 import javafx.collections.ObservableList;
@@ -25,7 +26,7 @@ public class AppController {
      private ScrollPane clientInformationComponent;
      private ClientInformationBodyController clientInformationComponentController;
      private ScrollPane clientPaymentComponent;
-     private ClientInformationBodyController clientPaymentComponentController;
+     private СlientPaymentBodyController  clientPaymentComponentController;
 /*     private ScrollPane clientScrambleComponent;
      private ClientInformationBodyController clientScrambleComponentController;*/
 
@@ -39,20 +40,34 @@ public class AppController {
 
     public AppController() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("../clientcomponents/clientinformationbody/clientInformationBody.fxml");
+        URL url = getClass().getResource("/clientcomponents/clientinformationbody/clientInformationBody.fxml");
         fxmlLoader.setLocation(url);
         this.clientInformationComponent = fxmlLoader.load(url.openStream());
         this.clientInformationComponentController = fxmlLoader.getController();
         this.clientInformationComponentController.setMainController(this);
 
 
-        FXMLLoader fxmlLoader2 = new FXMLLoader();
-        URL url2 = getClass().getResource("../clientcomponents/clientScrambleBody/ClientScrambleBody.fxml");
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource("/clientcomponents/clientpaymenybody/clientPaymentBody.fxml");
+        fxmlLoader.setLocation(url);
+        this.clientPaymentComponent = fxmlLoader.load(url.openStream());
+        this.clientPaymentComponentController= fxmlLoader.getController();
+        this.clientPaymentComponentController.setMainController(this);
+
+
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource("/clientcomponents/clientscramblebody/clientScrambleBody.fxml");
+        fxmlLoader.setLocation(url);
+        this.clientScrambleComponent = fxmlLoader.load(url.openStream());
+        this.clientScrambleComponentController= fxmlLoader.getController();
+        this.clientScrambleComponentController.setMainController(this);
+
+/*        FXMLLoader fxmlLoader2 = new FXMLLoader();
+        URL url2 = getClass().getResource("/clientcomponents/clientScrambleBody/ClientScrambleBody.fxml");
         fxmlLoader2.setLocation(url2);
         this.clientScrambleComponent = fxmlLoader2.load(url2.openStream());
        this.clientScrambleComponentController = fxmlLoader2.getController();
-      this.clientScrambleComponentController.setMainController(this);
-
+      this.clientScrambleComponentController.setMainController(this);*/
     }
 
     public void setBusinessLogic(Bank businessLogic) {
@@ -119,4 +134,7 @@ public class AppController {
     public void tellAdminBodyToUpdate() {
         bodyComponentController.updateAdminTables();
     }
+
+    public СlientPaymentBodyController getClientPaymentComponentController() {return clientPaymentComponentController;}
+
 }

@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.classesForTables.CustomerTableObj;
 import model.classesForTables.LoanTableObj;
-import model.classesForTables.TransactionTableObj;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -123,6 +122,56 @@ public class Bank implements BankActions, Serializable {
         loanCategories.clear();
         currentTime = 1;
 
+    }
+
+    //this function is used for the scramble screen, in order to display the filtered loans on the table
+    public ObservableList<LoanTableObj> getLoansInformationForTableFiltered(List<Loan> filteredLoans) {
+        ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
+        for (Loan loan : filteredLoans) {
+            String id = loan.getLoanName();
+            String owner = loan.getNameOfCreatingCustomer();
+            String category = loan.getLoanCategory();
+            String amount = loan.getLoanAmount() + "";
+            String time = loan.getTotalAmountOfTimeUnits() + "";
+            String interest = loan.getInterestRateInEveryPayment() + "";
+            String rate = loan.getPaymentRatePerTimeUnits() + "";
+            String status = loan.getStatus().toString();
+            String pending = "";
+            String active = "";
+            String risk = "";
+            String finished = "";
+            switch (loan.getStatus()) {
+                case PENDING:
+                    pending = loan.pendingData();
+                    break;
+                case ACTIVE:
+                    active = loan.activeData();
+                    break;
+                case RISK:
+                    risk = loan.riskData();
+                    break;
+                case FINISHED:
+                    finished = loan.finishedData();
+                    break;
+            }
+            LoanTableObj obj = new LoanTableObj(id, owner, category, amount, time, interest, rate, status, pending, active, risk, finished);
+            loansInformationForTable.add(obj);
+        }
+        return loansInformationForTable;
+
+    }
+
+
+    public List<Loan> getLoansByNames(Set<String> loanNamesChosen) {
+        List<Loan> loansByNames = new ArrayList<>();
+        for (String loanName : loanNamesChosen) {
+            for (Loan loan : allTheLoans) {
+                if (loan.getLoanName().equals(loanName)) {
+                    loansByNames.add(loan);
+                }
+            }
+        }
+        return loansByNames;
     }
 
     private void LoadLists(List<AbsCustomer> absCustomers, List<AbsLoan> absLoans, List<String> absLoanCategories) {
@@ -337,7 +386,7 @@ public class Bank implements BankActions, Serializable {
 
             }
 
-            /** this line is the only difference between the if and the else.. i am just lazy*/
+
             makingSureThatInvestmentIsNotExceedingMaxPercentage(loansForScheduling,howMuchToInvestInEachLoan, maxPercentageOfOwnership);
 
 //now we need to implement the changes to the actual loan list, and to update the customer's account:
@@ -408,6 +457,45 @@ public class Bank implements BankActions, Serializable {
     }
 
     //utility function for section 6 (we use -1 to indicate that the user did not use the limitations)
+    public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterestForTimeUnit, int minimumTotalTimeUnitsForInvestment) {
+
+        List<Loan> filteredLoans = new ArrayList<>();
+        for (Loan loan : allTheLoans) {
+            boolean isLoanNewOrPending = loan.isLoanNewOrPending();
+            boolean theLoanIsInFilteredCategories = filteredCategories.contains(loan.getLoanCategory());
+            boolean customerIsNotTheLoanOwner = !(loan.getNameOfCreatingCustomer().equals(customers.get(investingCustomerIndex).getCustomerName())); //need to make sure he cannot invest in himself
+            boolean theLoanHasEnoughInterest = loan.getInterestPerOneTimeUnit() >= minimumInterestForTimeUnit;
+            boolean loanHasEnoughTimeUnits = loan.getTotalAmountOfTimeUnits() >= minimumTotalTimeUnitsForInvestment;
+
+            if (minimumInterestForTimeUnit == -1) {
+                theLoanHasEnoughInterest = true;
+            }
+            if (minimumTotalTimeUnitsForInvestment == -1) {
+                loanHasEnoughTimeUnits = true;
+            }
+            if (filteredCategories.size() == 0) {
+                theLoanIsInFilteredCategories = true;
+            }
+            if (isLoanNewOrPending && theLoanIsInFilteredCategories && customerIsNotTheLoanOwner && theLoanHasEnoughInterest && loanHasEnoughTimeUnits) {
+                filteredLoans.add(loan);
+            }
+        }
+
+        return filteredLoans;
+    }
+
+    public List<String> getListOfCustomerNamesAndTheirCurrentBalance() {
+        List<String> customerData = new ArrayList<>();
+        int customerIndexCounter = 1;
+        for (Customer customer : customers) {
+            String temp;
+            temp = customerIndexCounter + " - " + customer.getCustomerName() + ", balance: " + customer.getCustomerAccount().getCurrentBalance() + '\n';
+            customerData.add(temp);
+            customerIndexCounter++;
+        }
+        return customerData;
+    }
+    //utility function for section 6 (we use -1 to indicate that the user did not use the limitations)
     public List<Loan> getFilteredLoans(int investingCustomerIndex, double moneyToInvest, Set<String> filteredCategories, double minimumInterest, int minimumTotalTimeUnitsForInvestment, int maximumOpenLoansForLoaner) {
 
         List<Loan> filteredLoans = new ArrayList<>();
@@ -438,7 +526,6 @@ public class Bank implements BankActions, Serializable {
 
         return filteredLoans;
     }
-
     public int getCustomerIndexByName(String customerName) {
         for (int i = 0; i < customers.size(); i++) {
             if (customers.get(i).getCustomerName().equals(customerName)) {
@@ -446,18 +533,6 @@ public class Bank implements BankActions, Serializable {
             }
         }
         return -1;
-    }
-
-    public List<String> getListOfCustomerNamesAndTheirCurrentBalance() {
-        List<String> customerData = new ArrayList<>();
-        int customerIndexCounter = 1;
-        for (Customer customer : customers) {
-            String temp;
-            temp = customerIndexCounter + " - " + customer.getCustomerName() + ", balance: " + customer.getCustomerAccount().getCurrentBalance() + '\n';
-            customerData.add(temp);
-            customerIndexCounter++;
-        }
-        return customerData;
     }
 
     public double getCustomerBalance(int customerIndex) {
@@ -484,7 +559,6 @@ public class Bank implements BankActions, Serializable {
     }
 
     public void payForLoans(Customer customer){
-        customer.setCustomerMessage(null);
         List<Loan> customerUnpaidLoans = customer.getLoansUnpaid();
         for(Loan loan : customerUnpaidLoans){
             loan.setLoanStatus(Loan.LoanStatus.RISK);
@@ -550,7 +624,7 @@ public class Bank implements BankActions, Serializable {
         return customersInformation;
     }
 
-    //util function
+    //util function to get the loans that a customer invested in
     private String getLoansThatCustomerCreated(Customer customer) {
         String LoansCustomerCreated = "";
         Integer newStatus = 0;
@@ -685,55 +759,12 @@ public class Bank implements BankActions, Serializable {
         return loansCustomerInvestedIn;
     }
 
-
-    //this function is used for the scramble screen, in order to display the filtered loans on the table
-    public ObservableList<LoanTableObj> getLoansInformationForTableFiltered(List<Loan> filteredLoans) {
-        ObservableList<LoanTableObj> loansInformationForTable = FXCollections.observableArrayList();
-        for (Loan loan : filteredLoans) {
-            String id = loan.getLoanName();
-            String owner = loan.getNameOfCreatingCustomer();
-            String category = loan.getLoanCategory();
-            String amount = loan.getLoanAmount() + "";
-            String time = loan.getTotalAmountOfTimeUnits() + "";
-            String interest = loan.getInterestRateInEveryPayment() + "";
-            String rate = loan.getPaymentRatePerTimeUnits() + "";
-            String status = loan.getStatus().toString();
-            String pending = "";
-            String active = "";
-            String risk = "";
-            String finished = "";
-            switch (loan.getStatus()) {
-                case PENDING:
-                    pending = loan.pendingData();
-                    break;
-                case ACTIVE:
-                    active = loan.activeData();
-                    break;
-                case RISK:
-                    risk = loan.riskData();
-                    break;
-                case FINISHED:
-                    finished = loan.finishedData();
-                    break;
-            }
-            LoanTableObj obj = new LoanTableObj(id, owner, category, amount, time, interest, rate, status, pending, active, risk, finished);
-            loansInformationForTable.add(obj);
-        }
-        return loansInformationForTable;
-
+    public int getCustomerIndex(Customer customer){
+        return customers.indexOf(customer);
     }
 
-
-    public List<Loan> getLoansByNames(Set<String> loanNamesChosen) {
-        List<Loan> loansByNames = new ArrayList<>();
-        for (String loanName : loanNamesChosen) {
-            for (Loan loan : allTheLoans) {
-                if (loan.getLoanName().equals(loanName)) {
-                    loansByNames.add(loan);
-                }
-            }
-        }
-        return loansByNames;
+    public List<Loan> getAllTheLoans() {
+        return allTheLoans;
     }
 
 

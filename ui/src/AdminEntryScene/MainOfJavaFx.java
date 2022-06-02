@@ -15,7 +15,7 @@ public class MainOfJavaFx extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("../app/app.fxml");
+        URL url = getClass().getResource("/app/app.fxml");
         fxmlLoader.setLocation(url);
         BorderPane root = fxmlLoader.load(url.openStream());
         //show app the primary stage, and he will show it to the other components that need to see it, e.g the body, that needs it to the file chooser.

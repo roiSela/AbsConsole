@@ -10,4 +10,16 @@ public class Message {
         this.paymentTime = paymentTime;
         this.paymentAmount = paymentAmount;
     }
+
+    public String getLoanName() {
+        return loanName;
+    }
+
+    public int getPaymentTime() {
+        return paymentTime;
+    }
+
+    public double getPaymentAmount() {
+        return paymentAmount;
+    }
 }

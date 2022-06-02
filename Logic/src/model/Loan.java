@@ -25,6 +25,7 @@ public class Loan implements Serializable {
     private List<Transaction> loanPayments; //the payments that the loan did so far
     private LoanStatus status;
     private double accumalatedDebt = 0; ///the total debt acculumated to this moment
+    private double loanPaidSoFar = 0;
 
     private int startingTime; //time loan became active
     private int finishingTime; // time loan is finished
@@ -408,6 +409,10 @@ public class Loan implements Serializable {
         String temp = "";
         temp += getDataForActiveLoanStatus();
         return temp;
+    }
+
+    public void updateLoanPayedSoFar(double amountPayed){
+        loanPaidSoFar +=amountPayed;
     }
 
 }

@@ -3,9 +3,11 @@ package clientcomponents.clientinformationbody;
 
 import app.AppController;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Bank;
 import model.Customer;
@@ -169,13 +171,42 @@ public class ClientInformationBodyController {
 
     }
 
+    public void ChargeMoney(ActionEvent event){
+        TextInputDialog chargeInput = new TextInputDialog();
+        chargeInput.setTitle("Charge money");
+        chargeInput.getDialogPane().setContentText("money to charge");
+        chargeInput.showAndWait();
+        mainController.getBusinessLogic().putMoneyInAccount(Double.parseDouble(chargeInput.getEditor().getText()),mainController.getBusinessLogic().getCustomerIndex(mainController.getCurrentCustomer()));
+        updateTables();
+
+
+
+    }
+
+    public void withdrawMoney(ActionEvent event){
+        TextInputDialog chargeInput = new TextInputDialog();
+        chargeInput.setTitle("Charge money");
+        chargeInput.getDialogPane().setContentText("money to charge");
+        chargeInput.showAndWait();
+        mainController.getBusinessLogic().takeMoneyFromAccount(Double.parseDouble(chargeInput.getEditor().getText()),mainController.getBusinessLogic().getCustomerIndex(mainController.getCurrentCustomer()));
+        updateTables();
+
+
+    }
+
     public void setBodyToScramble(){
         mainController.getRoot().setCenter(mainController.getClientScrambleComponent());
+        mainController.getClientPaymentComponentController().updateTables();
     }
+
+
 
     public void setBodyToPayment(){
         mainController.getRoot().setCenter(mainController.getClientPaymentComponent());
+        mainController.getClientPaymentComponentController().updateTables();
     }
+
+
 
     public void setMainController(AppController mainController) {this.mainController = mainController;}
 }

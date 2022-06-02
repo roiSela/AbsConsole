@@ -130,12 +130,12 @@ Main {
         Set<String> filteredLoanCategories = chooseLoanCategories(bank, input);
         double minimalInterestDouble = chooseMinimalInterest(bank, input);
         int maximalLoanTimeInt = chooseMaximalLoanTime(bank, input);
-        List<Loan> matchedLoans = bank.getFilteredLoans(customerIndexInt, investmentAmount, filteredLoanCategories, minimalInterestDouble, maximalLoanTimeInt,-1);
+        List<Loan> matchedLoans = bank.getFilteredLoans(customerIndexInt, investmentAmount, filteredLoanCategories, minimalInterestDouble, maximalLoanTimeInt);
         if (matchedLoans.size() == 0) {
             System.out.println("There are no loans to invest in.");
         }else {
             List<Loan> matchedLoansChosen = chooseMatchedLoans(bank, input, matchedLoans);
-            bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen,100);
+           // bank.schedulingLoansToCustomer(customerIndexInt, investmentAmount, matchedLoansChosen);
         }
         return bank;
     }

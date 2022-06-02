@@ -1,16 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="clientcomponents.clientpaymenybody.СlientPaymentBody">
-  <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="278.0" prefWidth="349.0">
-         <children>
-            <Button fx:id="scramble" layoutX="86.0" layoutY="110.0" mnemonicParsing="false" onAction="#SetSceneInformation" prefHeight="25.0" prefWidth="70.0" text="Scramble" />
-            <Button fx:id="payment" layoutX="156.0" layoutY="110.0" mnemonicParsing="false" onAction="#SetScenePayment" text="Payment" />
-            <Button fx:id="information" layoutX="8.0" layoutY="110.0" mnemonicParsing="false" onAction="#setSceneInformation" prefHeight="25.0" prefWidth="85.0" text="information" />
-         </children></AnchorPane>
-  </content>
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="1503.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientcomponents.clientpaymenybody.СlientPaymentBodyController">
+   <content>
+      <SplitPane dividerPositions="0.5192629815745393" prefHeight="718.0" prefWidth="1422.0">
+         <items>
+            <AnchorPane prefHeight="740.0" prefWidth="0.0">
+               <children>
+                  <VBox layoutY="-5.0" prefHeight="467.0" prefWidth="947.0">
+                     <children>
+                        <HBox prefHeight="74.0" prefWidth="695.0">
+                           <children>
+                              <TabPane prefHeight="75.0" prefWidth="298.0" tabClosingPolicy="UNAVAILABLE">
+                                <tabs>
+                                    <Tab onSelectionChanged="#setBodyToInformation" text="Information">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      </content>
+                                    </Tab>
+                                  <Tab onSelectionChanged="#setBodyToScramble" text="Scramble">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                  <Tab text="Payment">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </HBox>
+                        <Label text="Loans to pay today" />
+                         <TableView fx:id="loansToPay" onMouseClicked="#setCurrentLoan" prefHeight="160.0" prefWidth="956.0">
+                             <columns>
+                                 <TableColumn fx:id="id" prefWidth="75.0" text="id" />
+                                 <TableColumn fx:id="owner" prefWidth="75.0" text="owner" />
+                                 <TableColumn fx:id="category" prefWidth="75.0" text="Catergory" />
+                                 <TableColumn fx:id="amount" prefWidth="75.0" text="amount" />
+                                 <TableColumn fx:id="time" prefWidth="111.0" text="original time" />
+                                 <TableColumn fx:id="interest" prefWidth="85.0" text="interest" />
+                                 <TableColumn fx:id="rate" prefWidth="104.0" text="rate of payment" />
+                                 <TableColumn fx:id="status" minWidth="0.0" prefWidth="0.0" text="status" />
+                                 <TableColumn fx:id="pending" prefWidth="96.0" text="pending data" />
+                                 <TableColumn fx:id="active" prefWidth="78.0" text="active data" />
+                                 <TableColumn fx:id="risk" prefWidth="82.0" text="risk data" />
+                                 <TableColumn fx:id="finished" prefWidth="81.0" text="finished data" />
+                             </columns>
+                         </TableView>
+                        <TextField fx:id="amountToPaytoday" text="amount to pay today :" />
+                        <Button mnemonicParsing="false" onAction="#payForToday" text="Pay for today" />
+                        <TextField fx:id="amountToPayToday" text="Overall amount to pay left" />
+                        <Button mnemonicParsing="false" text="Pay for all" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="965.0" prefWidth="1242.0">
+               <children>
+                  <TableView fx:id="messageTable" prefHeight="656.0" prefWidth="858.0">
+                    <columns>
+                      <TableColumn fx:id="nLoanName" prefWidth="96.0" text="Loan name" />
+                      <TableColumn fx:id="nPaymentTime" prefWidth="105.0" text="Payment time" />
+                        <TableColumn fx:id="nPaymentAmount" prefWidth="107.0" text="Payment Amount" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </content>
 </ScrollPane>
