@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="476.0" prefWidth="1169.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientcomponents.clientinformationbody.ClientInformationBodyController">
+   <content>
+      <SplitPane dividerPositions="0.6912521440823327" prefHeight="459.0" prefWidth="1168.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="457.0" prefWidth="1051.0">
+               <children>
+                  <VBox layoutX="6.0" layoutY="-2.0" prefHeight="461.0" prefWidth="1123.0">
+                     <children>
+                        <HBox prefHeight="61.0" prefWidth="813.0">
+                           <children>
+                              <TabPane prefHeight="35.0" prefWidth="350.0" tabClosingPolicy="UNAVAILABLE">
+                                <tabs>
+                                  <Tab fx:id="information" text="Information">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="350.0" />
+                                    </content>
+                                  </Tab>
+                                  <Tab fx:id="scramble" onSelectionChanged="#setBodyToScramble" text="Scramble">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                    <Tab fx:id="payment" onSelectionChanged="#setBodyToPayment" text="Payment">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      </content>
+                                    </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </HBox>
+                        <Label text="loaner loans data" />
+                        <TableView fx:id="loanerLoans" prefHeight="160.0" prefWidth="956.0">
+                          <columns>
+                            <TableColumn fx:id="loaner_id" prefWidth="75.0" text="id" />
+                            <TableColumn fx:id="loaner_owner" prefWidth="75.0" text="owner" />
+                              <TableColumn fx:id="loaner_category" prefWidth="75.0" text="Catergory" />
+                              <TableColumn fx:id="loaner_amount" prefWidth="75.0" text="amount" />
+                              <TableColumn fx:id="loaner_time" prefWidth="111.0" text="original time" />
+                              <TableColumn fx:id="loaner_interest" prefWidth="85.0" text="interest" />
+                              <TableColumn fx:id="loaner_rate" prefWidth="104.0" text="rate of payment" />
+                              <TableColumn fx:id="loaner_status" minWidth="0.0" prefWidth="0.0" text="status" />
+                              <TableColumn fx:id="loaner_pending" prefWidth="96.0" text="pending data" />
+                              <TableColumn fx:id="loaner_active" prefWidth="78.0" text="active data" />
+                              <TableColumn fx:id="loaner_risk" prefWidth="82.0" text="risk data" />
+                              <TableColumn fx:id="loaner_finished" prefWidth="81.0" text="finished data" />
+                          </columns>
+                        </TableView>
+                        <Label text="lender loans data" />
+                        <TableView fx:id="lenderLoans" prefHeight="160.0" prefWidth="956.0">
+                           <columns>
+                              <TableColumn fx:id="lender_id" prefWidth="75.0" text="id" />
+                              <TableColumn fx:id="lender_owner" prefWidth="75.0" text="owner" />
+                              <TableColumn fx:id="lender_category" prefWidth="75.0" text="Catergory" />
+                              <TableColumn fx:id="lender_amount" prefWidth="75.0" text="amount" />
+                              <TableColumn fx:id="lender_time" prefWidth="111.0" text="original time" />
+                              <TableColumn fx:id="lender_interest" prefWidth="85.0" text="interest" />
+                              <TableColumn fx:id="lender_rate" prefWidth="104.0" text="rate of payment" />
+                              <TableColumn fx:id="lender_status" minWidth="0.0" prefWidth="0.0" text="status" />
+                              <TableColumn fx:id="lender_pending" prefWidth="96.0" text="pending data" />
+                              <TableColumn fx:id="lender_active" prefWidth="78.0" text="active data" />
+                              <TableColumn fx:id="lender_risk" prefWidth="82.0" text="risk data" />
+                              <TableColumn fx:id="lender_finished" prefWidth="81.0" text="finished data" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="457.0" prefWidth="412.0">
+               <children>
+                  <TableView fx:id="TransactionTable" layoutX="-1.0" prefHeight="364.0" prefWidth="479.0">
+                    <columns>
+                      <TableColumn fx:id="time" prefWidth="62.0" text="time" />
+                      <TableColumn fx:id="sum" prefWidth="68.0" text="sum" />
+                        <TableColumn fx:id="type" prefWidth="82.0" text="type" />
+                        <TableColumn fx:id="balanceBefore" prefWidth="126.0" text="balance before" />
+                        <TableColumn fx:id="balanceAfter" prefWidth="90.0" text="balance after" />
+                    </columns>
+                  </TableView>
+                  <HBox layoutX="-4.0" layoutY="363.0" prefHeight="101.0" prefWidth="350.0">
+                     <children>
+                        <Button fx:id="charge" mnemonicParsing="false" onAction="#ChargeMoney" text="Сharge" />
+                        <Button fx:id="withdraw" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#withdrawMoney" text="Withdraw " />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </content>
+</ScrollPane>
