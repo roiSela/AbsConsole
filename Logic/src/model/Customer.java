@@ -36,6 +36,10 @@ public class Customer implements Serializable {
         }
     }
 
+    public void removeFromLoansUnpaid(Loan loan){
+        loansUnpaid.remove(loan);
+    }
+
     public void payForLoan(Loan loan, int currentTime, Bank bank) {
         Account customerAccount = account;
         Transaction loanPayment = new Transaction(loan.getMoneyTopay(currentTime), currentTime, "-", customerAccount.getCurrentBalance(), customerAccount.getCurrentBalance() + loan.getMoneyTopay(currentTime));
@@ -60,8 +64,7 @@ public class Customer implements Serializable {
 
     public ObservableList<MessagesTableObj> getMessagesForTable() {
         ObservableList<MessagesTableObj> MessagesForTable = FXCollections.observableArrayList();
-        for (Message message : customerMessage) {
-            //String time = String.valueOf(transaction.getTransactionTime());
+        for (Message message : customerMessage) {//String time = String.valueOf(transaction.getTransactionTime());
             String loanName = message.getLoanName();
             String time = String.valueOf(message.getPaymentTime());
             String paymentAmount = String.valueOf(message.getPaymentAmount());

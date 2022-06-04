@@ -133,6 +133,9 @@ public class AdminBodyController {
 
     @FXML
     void increaseYazButtonPressed(ActionEvent event) {
+        businessLogic.RaiseTheTimeLine();
+        mainController.getHeaderComponentController().updateCurrentYaz();
+        updateAdminTables();
 
     }
 

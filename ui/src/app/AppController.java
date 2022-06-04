@@ -137,4 +137,7 @@ public class AppController {
 
     public СlientPaymentBodyController getClientPaymentComponentController() {return clientPaymentComponentController;}
 
+    public HeaderController getHeaderComponentController() {
+        return headerComponentController;
+    }
 }

@@ -33,7 +33,7 @@ public class Loan implements Serializable {
     public boolean isPaymentDay(int currentTime) {
         boolean isPaymentTime = (currentTime - startingTime) % paymentRatePerTimeUnits == 0;
         boolean isLastPayment = currentTime == startingTime + totalAmountOfTimeUnits;
-        return isPaymentTime || isLastPayment;
+        return (isPaymentTime || isLastPayment) && (status != LoanStatus.FINISHED && status != LoanStatus.NEW && status != LoanStatus.PENDING );
     }
 
 
@@ -411,8 +411,23 @@ public class Loan implements Serializable {
         return temp;
     }
 
+    public void setLoanStatusToFinished(){
+        status = LoanStatus.FINISHED;
+    }
+
+    public void setLoanStatusToActive(){
+        status = LoanStatus.ACTIVE;
+    }
+
     public void updateLoanPayedSoFar(double amountPayed){
         loanPaidSoFar +=amountPayed;
     }
 
+    public double getLoanPaidSoFar() {
+        return loanPaidSoFar;
+    }
+
+    public double paymentAmountToFinishTheLoan(){
+        return loanAmount + (loanAmount * interestRateInEveryPayment)/ 100 - loanPaidSoFar  ;
+    }
 }

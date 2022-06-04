@@ -20,8 +20,10 @@ public class СlientPaymentBodyController {
 
     @FXML
     private TextField amountToPayToday;
-   @FXML
-   private TableView<MessagesTableObj> messageTable;
+    @FXML
+    private TextField amountToPayForEverything;
+    @FXML
+    private TableView<MessagesTableObj> messageTable;
 
     @FXML
     private TableColumn<MessagesTableObj, String> nLoanName;
@@ -112,22 +114,67 @@ public class СlientPaymentBodyController {
     public void setCurrentLoan(){
             String currentLoanName = loansToPay.getSelectionModel().getSelectedItem().getId();
             this.currentLoan = mainController.getBusinessLogic().getLoanById(currentLoanName);
-            String amountToPayTodayString = "amount to pay today :" + currentLoan.getMoneyTopay(Bank.getCurrentTime());
+            String amountToPayTodayString = "amount to pay today :" + currentLoan.getAccumalatedDebt();
+            String amountToPayForEverythingString = "amount to pay to finish :" + currentLoan.paymentAmountToFinishTheLoan();
+            System.out.println(amountToPayTodayString);
             amountToPayToday.setText(amountToPayTodayString);
+            amountToPayForEverything.setText(amountToPayForEverythingString);
+
 
     }
 
     public void payForToday()
     {
-        double paymentAmmount =  currentLoan.getMoneyTopay(Bank.getCurrentTime());
+
+        double paymentAmmount =  currentLoan.getAccumalatedDebt();
         Customer customer = mainController.getCurrentCustomer();
+        customer.removeFromLoansUnpaid(currentLoan);
         int currentTime = Bank.getCurrentTime();
-        Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() + paymentAmmount);
+        Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() - paymentAmmount);
+        Account customerAccount = customer.getCustomerAccount();
+        currentLoan.getLoanPayments().add(paymentToinvestor);
+        customerAccount .getCustomerTransactions().add(paymentToinvestor);
+        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() - paymentAmmount);
+        currentLoan.updateLoanPayedSoFar(paymentAmmount);
+        if(currentTime >= currentLoan.getStartingTime() + currentLoan.getTotalAmountOfTimeUnits()){
+            currentLoan.setLoanStatusToFinished();
+        }
+        else{
+            currentLoan.setLoanStatusToActive();
+        }
+
+        for(Investment investment : currentLoan.getInvestments()){
+            double investmentPart = investment.getSizeOfInvestment() / currentLoan.getLoanAmount();
+            double payment= paymentAmmount * investmentPart;
+            Customer investedCustomer = mainController.getBusinessLogic().getCustomerByName(investment.getNameOfCustomer());
+            mainController.getBusinessLogic().payInvestment(paymentAmmount, investedCustomer);
+        }
+        currentLoan.setAccumalatedDebt(0);
+        setCurrentLoan();
+
+    }
+
+    public void payForToFinish(){
+        double paymentAmmount = currentLoan.paymentAmountToFinishTheLoan();
+        Customer customer = mainController.getCurrentCustomer();
+        customer.removeFromLoansUnpaid(currentLoan);
+        int currentTime = Bank.getCurrentTime();
+        Transaction paymentToinvestor = new Transaction(paymentAmmount, currentTime, "+", customer.getCustomerAccount().getCurrentBalance(), customer.getCustomerAccount().getCurrentBalance() - paymentAmmount);
+        currentLoan.getLoanPayments().add(paymentToinvestor);
         Account customerAccount = customer.getCustomerAccount();
         customerAccount .getCustomerTransactions().add(paymentToinvestor);
-        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() + paymentAmmount);
+        customerAccount .setAccountBalance(customerAccount.getCurrentBalance() - paymentAmmount);
         currentLoan.updateLoanPayedSoFar(paymentAmmount);
+        currentLoan.setLoanStatusToFinished();
 
+        for(Investment investment : currentLoan.getInvestments()){
+            double investmentPart = investment.getSizeOfInvestment() / currentLoan.getLoanAmount();
+            double payment= paymentAmmount * investmentPart;
+            Customer investedCustomer = mainController.getBusinessLogic().getCustomerByName(investment.getNameOfCustomer());
+            mainController.getBusinessLogic().payInvestment(paymentAmmount, investedCustomer);
+        }
+        currentLoan.setAccumalatedDebt(0);
+        setCurrentLoan();
 
     }
 

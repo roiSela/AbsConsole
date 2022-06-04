@@ -269,11 +269,16 @@ public class ClientScrambleBody {
                                 });
                                 TimeUnit.SECONDS.sleep(1);
                                 businessLogic.schedulingLoansToCustomer(customerIndex, moneyToInvest, loansToInvestIn, maxPercentage);
+                                updateLoansInformationForTable(loansToInvestIn);
                                 return 1;
                         }
                 };
                 //using platform runlater to update the gui
+
                new Thread(task).start();
+
+
+
 
         }
 

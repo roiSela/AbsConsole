@@ -37,9 +37,12 @@ public class HeaderController {
             mainController.getRoot().setCenter(mainController.getClientInformationComponent());
             mainController.setCurrentCustomer(businessLogic.getCustomerByName(userModeComboBox.getValue()));
             mainController.getClientInformationComponentController().updateTables();
-            mainController.updateCustomerScrambleCategoriesListForCheckBox();
+            //mainController.updateCustomerScrambleCategoriesListForCheckBox();
         }
 
+    }
+    public void updateCurrentYaz(){
+        currentYazLable.setText(String.valueOf(Bank.getCurrentTime()));
     }
 
     public void setBusinessLogic(Bank businessLogic) {

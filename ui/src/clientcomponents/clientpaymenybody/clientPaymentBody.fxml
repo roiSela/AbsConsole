@@ -61,10 +61,10 @@
                                  <TableColumn fx:id="finished" prefWidth="81.0" text="finished data" />
                              </columns>
                          </TableView>
-                        <TextField fx:id="amountToPaytoday" text="amount to pay today :" />
+                        <TextField fx:id="amountToPayToday" text="amount to pay today :" />
                         <Button mnemonicParsing="false" onAction="#payForToday" text="Pay for today" />
-                        <TextField fx:id="amountToPayToday" text="Overall amount to pay left" />
-                        <Button mnemonicParsing="false" text="Pay for all" />
+                        <TextField fx:id="amountToPayForEverything" text="Overall amount to pay left" />
+                        <Button mnemonicParsing="false" onAction="#payForToFinish" text="Pay for all" />
                      </children>
                   </VBox>
                </children>

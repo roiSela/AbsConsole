@@ -567,10 +567,13 @@ public class Bank implements BankActions, Serializable {
         List<Loan> customerLoans = customer.getLoansCustomerCreated();
 
         for (Loan loan : customerLoans) {
-            if(loan.isPaymentDay(currentTime) && loan.getStatus() != Loan.LoanStatus.FINISHED)
-                customerUnpaidLoans.add(loan);
+            if(loan.isPaymentDay(currentTime)) {
+                if(loan.getStatus() != Loan.LoanStatus.RISK) {
+                    customerUnpaidLoans.add(loan);
+                }
+                loan.setAccumalatedDebt(loan.getMoneyTopay(currentTime));
+            }
         }
-
         for(Loan loan : customerUnpaidLoans)
         {
             Message newMessage = new Message(loan.getLoanName(), currentTime, loan.getMoneyTopay(currentTime));
