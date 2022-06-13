@@ -62,12 +62,6 @@ public class AppController {
         this.clientScrambleComponentController= fxmlLoader.getController();
         this.clientScrambleComponentController.setMainController(this);
 
-/*        FXMLLoader fxmlLoader2 = new FXMLLoader();
-        URL url2 = getClass().getResource("/clientcomponents/clientScrambleBody/ClientScrambleBody.fxml");
-        fxmlLoader2.setLocation(url2);
-        this.clientScrambleComponent = fxmlLoader2.load(url2.openStream());
-       this.clientScrambleComponentController = fxmlLoader2.getController();
-      this.clientScrambleComponentController.setMainController(this);*/
     }
 
     public void setBusinessLogic(Bank businessLogic) {
@@ -126,7 +120,7 @@ public class AppController {
         this.currentCustomer = customer;
         clientScrambleComponentController.setCurrentCustomer(customer);
     }
-
+    
     public void updateCustomerScrambleCategoriesListForCheckBox() {
         clientScrambleComponentController.addCategoriesToCheckBox(businessLogic.getLoanCategories());
     }

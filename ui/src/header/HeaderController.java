@@ -37,7 +37,7 @@ public class HeaderController {
             mainController.getRoot().setCenter(mainController.getClientInformationComponent());
             mainController.setCurrentCustomer(businessLogic.getCustomerByName(userModeComboBox.getValue()));
             mainController.getClientInformationComponentController().updateTables();
-            //mainController.updateCustomerScrambleCategoriesListForCheckBox();
+            mainController.updateCustomerScrambleCategoriesListForCheckBox();
         }
 
     }
