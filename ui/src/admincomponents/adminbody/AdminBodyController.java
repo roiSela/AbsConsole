@@ -1,3 +1,4 @@
+/*
 package admincomponents.adminbody;
 
 import app.AppController;
@@ -176,3 +177,4 @@ public class AdminBodyController {
         updateLoansInformationForTable(); // update loans table in the admin view
     }
 }
+*/

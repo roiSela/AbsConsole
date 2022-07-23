@@ -1,5 +1,6 @@
 package model;
 
+
 import generated.AbsLoan;
 
 import java.io.Serializable;
@@ -7,6 +8,7 @@ import java.util.*;
 
 
 public class Loan implements Serializable {
+
 
     enum LoanStatus {NEW, PENDING, RISK, ACTIVE, FINISHED}
 
@@ -37,9 +39,9 @@ public class Loan implements Serializable {
     }
 
 
-    public Loan(AbsLoan copyFrom) {
+    public Loan(AbsLoan copyFrom, String nameOfCreatingCustomer) {
         loanName = copyFrom.getId();
-        nameOfCreatingCustomer = copyFrom.getAbsOwner();
+        this.nameOfCreatingCustomer = nameOfCreatingCustomer;
         loanAmount = copyFrom.getAbsCapital();
         totalAmountOfTimeUnits = copyFrom.getAbsTotalYazTime();
         paymentRatePerTimeUnits = copyFrom.getAbsPaysEveryYaz();
@@ -49,6 +51,19 @@ public class Loan implements Serializable {
         investments = new ArrayList<>();
         loanPayments = new ArrayList<>();
 
+    }
+
+    public Loan(String customerName,String loanId,String category,String capital,String totalYaz,String paymentRate,String intrist){
+        this.nameOfCreatingCustomer = customerName;
+        this.loanName = loanId;
+        this.loanAmount = Double.parseDouble(capital);
+        this.totalAmountOfTimeUnits = Integer.parseInt(totalYaz);
+        this.paymentRatePerTimeUnits = Integer.parseInt(paymentRate);
+        this.interestRateInEveryPayment = Double.parseDouble(intrist);
+        this.loanCategory = category;
+        this.status = LoanStatus.NEW;
+        this.investments = new ArrayList<>();
+        this.loanPayments = new ArrayList<>();
     }
 
     public Loan(Loan copyFrom) {

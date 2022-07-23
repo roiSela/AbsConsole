@@ -1,5 +1,4 @@
 package model;
-
 import generated.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,7 +38,44 @@ public class Bank implements BankActions, Serializable {
 
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";///
 
-    @Override
+    public String loadSystemDetailsFromFile(InputStream filePath, String customerName) {
+
+        AbsDescriptor descriptor = null;
+
+       /* if (!filePath.endsWith("xml")) //check that the file ending is xml
+        {
+            return "The file specified is not of xml type, please enter the correct file format";
+        }*/
+        try {
+            InputStream inputStream = filePath;
+            descriptor = deserializeFrom(inputStream);
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return "Could not find The file";
+        }
+        //extracting jaxb data
+        List<String> absLoanCategories = descriptor.getAbsCategories().getAbsCategory();
+        //List<AbsCustomer> absCustomers = descriptor.getAbsCustomers().getAbsCustomer();
+        List<AbsLoan> absLoans = descriptor.getAbsLoans().getAbsLoan();
+        if (!loanCategoriesAreValid(absLoans, absLoanCategories)) {
+            return "File is not valid, there is a Referral to a non-existent loan category";
+        }
+   /*     if (!loanReferralsAreValid(absCustomers, absLoans)) {
+            return "File is not valid, there is a Referral to a non-existent customer";
+        }*/
+        if (!paymentRateAndLoanTimeLengthFit(absLoans)) {
+            return "File is not valid,there is a loan that contains a payment Rate And model.Loan Time Length that do not fit";
+        }
+
+        //if the data is valid,we:
+        //deleteCurrentBankListsAndInitTime(); //delete the previous system data
+        LoadLists(customerName,absLoans, absLoanCategories); //update it to the just loaded data.
+        return "The file and data were loaded successfully";
+    }
+
+
+   /* @Override
     public String loadSystemDetailsFromFile(String filePath) {
 
         AbsDescriptor descriptor = null;
@@ -74,7 +110,7 @@ public class Bank implements BankActions, Serializable {
         deleteCurrentBankListsAndInitTime(); //delete the previous system data
         LoadLists(absCustomers, absLoans, absLoanCategories); //update it to the just loaded data.
         return "The file and data were loaded successfully";
-    }
+    }*/
 
     private boolean paymentRateAndLoanTimeLengthFit(List<AbsLoan> absLoans) {
         for (AbsLoan absLoan : absLoans) {
@@ -94,7 +130,7 @@ public class Bank implements BankActions, Serializable {
         return true;
     }
 
-    private boolean loanReferralsAreValid(List<AbsCustomer> absCustomers, List<AbsLoan> absLoans) {
+/*    private boolean loanReferralsAreValid(List<AbsCustomer> absCustomers, List<AbsLoan> absLoans) {
         List<String> allCustomerNames = new ArrayList<>();
         for (AbsCustomer customer : absCustomers) {
             allCustomerNames.add(customer.getName());
@@ -105,7 +141,7 @@ public class Bank implements BankActions, Serializable {
             }
         }
         return true;
-    }
+    }*/
 
     private boolean loanCategoriesAreValid(List<AbsLoan> absLoans, List<String> absLoanCategories) {
         for (AbsLoan absLoan : absLoans) {
@@ -174,22 +210,32 @@ public class Bank implements BankActions, Serializable {
         return loansByNames;
     }
 
-    private void LoadLists(List<AbsCustomer> absCustomers, List<AbsLoan> absLoans, List<String> absLoanCategories) {
-        loanCategories = absLoanCategories;
-        for (AbsCustomer cust : absCustomers) {
-            customers.add(new Customer(cust));
+    private void LoadLists(String customerName, List<AbsLoan> absLoans, List<String> absLoanCategories) {
+        //add absLoanCategories to loan Categories
+        for (String category : absLoanCategories) {
+            loanCategories.add(category);
         }
+        //check if customerName is in list
+        if (!customers.contains(customerName)) {
+            customers.add(new Customer(customerName));
+        }
+        Customer customerThatUploadedFile = getCustomerByName(customerName);
+      /*  for (AbsCustomer cust : absCustomers) {
+            customers.add(new Customer(cust));
+        }*/
         for (AbsLoan absLoan : absLoans) {
-            allTheLoans.add(new Loan(absLoan));
+            Loan temp = new Loan(absLoan,customerName);
+            allTheLoans.add(temp);
+            customerThatUploadedFile.addCreatedLoan(temp);
         }
 
-        for (Customer customer : customers) {//add the loans to the creating customers
+     /*   for (Customer customer : customers) {//add the loans to the creating customers
             for (Loan loan : allTheLoans) {
                 if (customer.getCustomerName().equals(loan.getNameOfCreatingCustomer())) {
                     customer.addCreatedLoan(loan);
                 }
             }
-        }
+        }*/
     }
 
     private static AbsDescriptor deserializeFrom(InputStream in) throws JAXBException {
@@ -771,6 +817,34 @@ public class Bank implements BankActions, Serializable {
     }
 
 
+    //checks if the customer already exists in the system
+    public boolean isUserExists(String usernameFromParameter) {
+        for (Customer customer : customers) {
+            if (customer.getCustomerName().equals(usernameFromParameter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //adds the customer to the system
+    public void addUser(String usernameFromParameter) {
+        Customer customer = new Customer(usernameFromParameter);
+        customers.add(customer);
+    }
+
+
+    public String createNewLoan(String customerName, String loanId, String category, String capital, String totalYaz, String paymentRate, String intrist) {
+        Loan loan = new Loan(customerName, loanId, category, capital, totalYaz, paymentRate, intrist);
+        allTheLoans.add(loan);
+        //add loan to customer too
+        for (Customer customer : customers) {
+            if (customer.getCustomerName().equals(customerName)) {
+                customer.addLoan(loan);
+            }
+        }
+        return loan.getLoanName();
+    }
 }
 
 

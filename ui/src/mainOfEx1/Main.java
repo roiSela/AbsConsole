@@ -1,3 +1,4 @@
+/*
 package mainOfEx1;
 
 import model.Bank;
@@ -328,3 +329,4 @@ Main {
     }
 }
 
+*/

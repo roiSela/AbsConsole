@@ -9,7 +9,7 @@ public interface BankActions {
      return "The file and data were loaded successfully" if the data is valid for the system and if not, return the failure reason.
 
      */
-    String  loadSystemDetailsFromFile(String filePath );
+   // String  loadSystemDetailsFromFile(String filePath);
 
     /**
     this function will return data about all the current loans in the system

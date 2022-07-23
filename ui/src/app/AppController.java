@@ -1,3 +1,4 @@
+/*
 package app;
 
 import admincomponents.adminbody.AdminBodyController;
@@ -27,8 +28,10 @@ public class AppController {
      private ClientInformationBodyController clientInformationComponentController;
      private ScrollPane clientPaymentComponent;
      private СlientPaymentBodyController  clientPaymentComponentController;
+*/
 /*     private ScrollPane clientScrambleComponent;
-     private ClientInformationBodyController clientScrambleComponentController;*/
+     private ClientInformationBodyController clientScrambleComponentController;*//*
+
 
      private ScrollPane clientScrambleComponent;
      private ClientScrambleBody clientScrambleComponentController;
@@ -134,4 +137,4 @@ public class AppController {
     public HeaderController getHeaderComponentController() {
         return headerComponentController;
     }
-}
+}*/

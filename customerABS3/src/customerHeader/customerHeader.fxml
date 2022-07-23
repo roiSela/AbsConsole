@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="103.0" prefWidth="1065.0" spacing="50.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="customerHeader.CustomerHeaderController">
+   <children>
+      <Button fx:id="informationButton" mnemonicParsing="false" onAction="#informationButtonPressed" text="Information" />
+      <Button fx:id="paymentButton" mnemonicParsing="false" onAction="#paymentButtonPressed" text="Payment" />
+      <Button fx:id="scrambleButton" mnemonicParsing="false" onAction="#scrambleButtonPressed" text="Scramble" />
+      <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFileButtonPressed" prefHeight="25.0" prefWidth="146.0" text="Load Loans via file" />
+      <Button fx:id="createNewLoanButton" mnemonicParsing="false" onAction="#createNewLoanButtonPressed" text="Create new loan" />
+      <Button fx:id="sellOrBuyLoansButton" mnemonicParsing="false" onAction="#sellOrBuyLoansButtonPressed" text="Sell or buy loans" />
+      <Label fx:id="customerName" prefHeight="93.0" prefWidth="162.0" text="customer name" />
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets left="10.0" />
+   </padding>
+</HBox>

@@ -1,6 +1,5 @@
 package model;
 
-import generated.AbsCustomer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.classesForTables.LoanTableObj;
@@ -18,9 +17,18 @@ public class Customer implements Serializable {
     private List<Loan> loansUnpaid ; ///list to save unpaid loans
     private List<Message> customerMessage; ///Message about loans paymaent
 
-    public Customer(AbsCustomer copyFrom) {
+/*    public Customer(AbsCustomer copyFrom) {
         name = copyFrom.getName();
         account = new Account(copyFrom.getAbsBalance());
+        idListOfLoansThatCustomerInvestedIn = new ArrayList<>();
+        loansCustomerCreated = new ArrayList<>();
+        customerMessage = new ArrayList<>();
+        loansUnpaid = new ArrayList<>();
+    }*/
+
+    public Customer(String name){
+        this.name = name;
+        account = new Account(0);
         idListOfLoansThatCustomerInvestedIn = new ArrayList<>();
         loansCustomerCreated = new ArrayList<>();
         customerMessage = new ArrayList<>();
@@ -29,6 +37,7 @@ public class Customer implements Serializable {
 
     public void addCreatedLoan(Loan loan) {
         loansCustomerCreated.add(loan);
+        loansUnpaid.add(loan); //this is a line i added.
     }
     public void addInvestedLoan(String id) {
         if (!idListOfLoansThatCustomerInvestedIn.contains(id)) {
@@ -98,4 +107,8 @@ public class Customer implements Serializable {
     public List<Message> getCustomerMessage() {return customerMessage;}
 
     public void setCustomerMessage(List<Message> customerMessage) {this.customerMessage = customerMessage;}
+
+    public void addLoan(Loan loan) {
+        loansCustomerCreated.add(loan);
+    }
 }
