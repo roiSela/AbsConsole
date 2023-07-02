@@ -1,4 +1,4 @@
 # AbsConsole
 Name and id:
-Roi sela 208199679.
+Roi sela 
 Kiril kotin 
