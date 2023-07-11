@@ -8,7 +8,8 @@ One is the simplest, in the form, that has a console based UI, with a great logi
 The second is with a similar logic, but with a more ***Advanced UI*** using ***javaFX*** and ***SceneBuilder***.
 The third is an implementation of the ABS project with a JavaFX UI but with an **Advanced Client-Server Architecture**, ***The backend was written using Apache Tomcat's Java-Servlet solutions***. 
 
-Before you some pics of the second stage of the ABS project, from loading an xml and viewing the admin mode, to scramble a loan and seeing the change in UI. 
+Included before you:
+some pics of the second stage of the ABS project, from loading an xml and viewing the admin mode, to scramble a loan and seeing the change in UI. 
 
 ![image](https://github.com/roiSela/Alternative-banking-system/assets/62753901/e394a4da-8c71-441d-856c-fefcb8c7afab)
 
