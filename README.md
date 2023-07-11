@@ -12,6 +12,7 @@ The second is with a similar logic, but with a more ***Advanced UI*** using ***j
 The third is an implementation of the ABS project with a JavaFX UI but with an **Advanced Client-Server Architecture**, ***The backend was written using Apache Tomcat's Java-Servlet solutions***. 
 
 Included before you:
+
 some pics of the second stage of the ABS project, from loading an xml and viewing the admin mode, to scramble a loan and seeing the change in UI. 
 
 ![image](https://github.com/roiSela/Alternative-banking-system/assets/62753901/e394a4da-8c71-441d-856c-fefcb8c7afab)
@@ -24,6 +25,7 @@ some pics of the second stage of the ABS project, from loading an xml and viewin
 
 
 ![image](https://github.com/roiSela/Alternative-banking-system/assets/62753901/3b2e4b49-39ab-4318-b095-9a2d35949065)
+
 
 ![image](https://github.com/roiSela/Alternative-banking-system/assets/62753901/bcb33681-28da-47ac-aba2-c1f614bb0ce6)
 
