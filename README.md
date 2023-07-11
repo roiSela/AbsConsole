@@ -6,7 +6,7 @@ Definition and description of the *Alternative Banking System* (ABS) project’s
 Like you can read in the docx file, The app has three "faces"
 One is the simplest, in the form, that has a console based UI.
 The second is with a similar logic, but with a more advanced UI using javaFX and sceneMaker.
-The third is an implementation of the ABS project with a JavaFX UI but with an <!-- advanced Client-Server Architecture -->, The backend was written using Apache Tomcat's Java Servlet solutions. 
+The third is an implementation of the ABS project with a JavaFX UI but with an **advanced Client-Server Architecture**, The backend was written using Apache Tomcat's Java Servlet solutions. 
 
 Before you some pics of the second stage of the ABS project, from loading an xml and viewing the admin mode, to scramble a loan and seeing the change in UI. 
 
